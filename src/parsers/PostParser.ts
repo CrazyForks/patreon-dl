@@ -126,10 +126,18 @@ export default class PostParser extends Parser {
         attachments = downloadables.attachments_media as Downloadable<AttachmentMediaItem>[] || [];
       }
 
+      // Post content and teaser
+      const content = this.#parseContent(attributes);
+      const teaserText = this.#parseContent({
+        content: attributes.teaser_text,
+        content_json_string: attributes.teaser_text_json_string
+      });
+
       // Get inline media from content (currently only images and linked attachments supported)
       const linkedAttachments: LinkedAttachment[] = [];
-      if (hasIncludedJSON && attributes.content) {
-        const inlineMedia = this.parseInlineMedia(id, attributes.content, includedJSON);
+      const inlineMediaBody = content || teaserText;
+      if (hasIncludedJSON && inlineMediaBody) {
+        const inlineMedia = this.parseInlineMedia(id, inlineMediaBody, includedJSON);
         images.push(...inlineMedia.images);
         linkedAttachments.push(...inlineMedia.linkedAttachments);
       }
@@ -303,9 +311,9 @@ export default class PostParser extends Parser {
         isViewable,
         url: attributes.url || null,
         title: attributes.title || null,
-        content: attributes.content || null,
-        contentText: stripHtml(attributes.content || '').result,
-        teaserText: attributes.teaser_text || null,
+        content,
+        contentText: stripHtml(content || '').result,
+        teaserText,
         publishedAt: attributes.published_at || null,
         editedAt: attributes.edited_at || null,
         commentCount: attributes.comment_count || 0,
@@ -344,6 +352,63 @@ export default class PostParser extends Parser {
     this.log('debug', 'Done parsing posts');
 
     return collection;
+  }
+
+  /**
+   * Returns `content` if value is not empty.
+   * Otherwise, returns HTML assembled from `content_json_string`.
+   * 
+   * Contributed by: Fabelwesen (https://github.com/Fabelwesen)
+   * Origin: https://github.com/patrickkfkan/patreon-dl/issues/119
+   * 
+   * @param data 
+   * @returns HTML or null
+   */
+  #parseContent(data: { content?: string | null; content_json_string?: string | null }) {
+    const { content, content_json_string } = data;
+    if (typeof content === 'string' && content.trim()) {
+      return content;
+    }
+    if (!content_json_string) {
+      return null;
+    }
+    try {
+      const doc = JSON.parse(content_json_string);
+      let parsedHTML = '';
+
+      function extractHTML(node: any) {
+        if (!node) return;
+
+        if (node.type === 'text') {
+          if (node.marks && node.marks.find((m: any) => m.type === 'link')) {
+            const linkMark = node.marks.find((m: any) => m.type === 'link');
+            parsedHTML += `<a href="${linkMark.attrs.href}" target="_blank">${node.text || ''}</a>`;
+          } else {
+            // You can expand this to handle bold, italic, etc.
+            parsedHTML += (node.text || '');
+          }
+        } else if (node.type === 'paragraph' || node.type === 'heading' || node.type === 'listItem') {
+          parsedHTML += '<p>';
+          if (node.content && Array.isArray(node.content)) {
+            node.content.forEach(extractHTML);
+          }
+          parsedHTML += '</p>';
+        } else if (node.type === 'image') {
+          // Ensure media_id is passed so the local web server can link downloaded assets
+          const mediaIdAttr = (node.attrs && node.attrs.media_id) ? `data-media-id="${node.attrs.media_id}" ` : '';
+          const srcAttr = (node.attrs && node.attrs.src) ? node.attrs.src : '';
+          parsedHTML += `<img ${mediaIdAttr}src="${srcAttr}" />`;
+        } else if (node.content && Array.isArray(node.content)) {
+          node.content.forEach(extractHTML);
+        }
+      }
+
+      extractHTML(doc);
+      return parsedHTML;
+    } catch (e) {
+      this.log('warn', 'Failed to parse content_json_string:', e);
+    }
+    return null;
   }
 
   #getVideoMediaItemFromAttr(attrJSON: any, includedJSON: any, postId: string, strict: true): VideoMediaItem | null;
