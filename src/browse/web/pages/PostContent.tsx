@@ -9,6 +9,8 @@ import { type PostWithComments } from "../../types/Content";
 import { type PostFilterSearchParams } from "../../types/Filter";
 import { type UnionToTuple } from "../../../utils/Misc";
 import { useScroll } from "../contexts/MainContentScrollProvider";
+import { useBrowseSettings } from "../contexts/BrowseSettingsProvider";
+import { BrowseSettings } from "../../types/Settings";
 
 interface PostNav {
   previous: PostWithComments | null;
@@ -46,12 +48,12 @@ const contentReducer = (currentContent: PostWithComments | null, newContent: Pos
 
 const ContentColumn = forwardRef<
   HTMLDivElement,
-  { children: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>
->(({children, ...props}, ref) => {
+  { children: React.ReactNode, settings: BrowseSettings } & React.HTMLAttributes<HTMLDivElement>
+>(({children, settings, ...props}, ref) => {
   return (
     <Container fluid ref={ref} {...props}>
       <Row className="justify-content-center">
-        <Col lg={8} md={10} sm={12} className="p-0" style={{maxWidth: '40.5em'}}>
+        <Col lg={8} md={10} sm={12} className={`p-0 post-content__column mw-${settings.maxContentWidth.toLowerCase()}`}>
           {children}
         </Col>
       </Row>
@@ -62,6 +64,7 @@ const ContentColumn = forwardRef<
 function PostContent() {
   const {id: postId} = useParams();
   const { api } = useAPI();
+  const { settings } = useBrowseSettings();
   const { scrollTo } = useScroll();
   const [post, setContent] = useReducer(contentReducer, null);;
   const [postNav, setPostNav] = useState<PostNav>({ previous: null, next: null });
@@ -145,7 +148,7 @@ function PostContent() {
         : '';
       const fixed = stickyNav ? 'fixed' : '';
       return (
-        <ContentColumn ref={navRef} className={`post-nav__wrapper ${fixed}`}>
+        <ContentColumn ref={navRef} settings={settings} className={`post-nav__wrapper ${fixed}`}>
           <Stack direction="horizontal" className={`post-nav mt-2 mb-3 ${justify}`}>
             { previousLink }
             { nextLink }
@@ -162,7 +165,7 @@ function PostContent() {
 
   return (
     <>
-      <ContentColumn ref={contentRef}>
+      <ContentColumn ref={contentRef} settings={settings}>
         <div className={!nav || stickyNav ? 'py-4' : 'pt-4'}>
           <PostCard post={post} showCampaign />
         </div>
@@ -170,7 +173,7 @@ function PostContent() {
       { !stickyNav && nav }
       {
         post.comments && (
-          <ContentColumn ref={commentsRef} className="pt-2 pb-4 px-4">
+          <ContentColumn ref={commentsRef} settings={settings} className="pt-2 pb-4 px-4">
             <h5 className="mb-3">{post.commentCount} {post.comments.length > 1 ? 'comments' : 'comment'}</h5>
             <CommentsPanel comments={post.comments} />
           </ContentColumn>

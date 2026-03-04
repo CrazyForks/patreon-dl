@@ -1,3 +1,4 @@
+import "../assets/styles/CampaignList.scss";
 import { useEffect, useReducer, useState } from "react";
 import copy from 'fast-copy';
 import deepEqual from "deep-equal";
@@ -109,7 +110,7 @@ function CampaignList() {
   return (
     <Container fluid>
       <Row className="g-0 justify-content-center">
-        <Col md={10} sm={12} style={{maxWidth: '40.5em'}}>
+        <Col md={10} sm={12} className={`campaign-list mw-${settings.maxContentWidth.toLowerCase()}`}>
           <h2 className="my-4">Creators</h2>
           <Container fluid className="p-0">
             <Row className="mb-2 g-0 justify-content-center align-items-center">

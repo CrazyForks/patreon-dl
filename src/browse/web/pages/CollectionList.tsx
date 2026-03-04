@@ -1,3 +1,4 @@
+import "../assets/styles/CollectionList.scss";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import copy from 'fast-copy';
 import deepEqual from "deep-equal";
@@ -133,7 +134,7 @@ function CollectionList() {
   return (
     <Container fluid>
       <Row className="g-0 justify-content-center">
-        <Col md={10} sm={12} style={{maxWidth: '40.5em'}}>
+        <Col md={10} sm={12} className={`collection-list mw-${settings.maxContentWidth.toLowerCase()}`}>
           <Container fluid className="p-0">
             <Row className="mb-3 g-0 justify-content-center align-items-center">
               <Col className="w-auto flex-fill">

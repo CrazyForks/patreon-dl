@@ -42,6 +42,7 @@ export default class SettingsAPIRequestHandler extends Basehandler {
     const hasValidThemeValue = Reflect.has(data, 'theme') && typeof data.theme === 'string';
     const hasValidListItemsPerPageValue = Reflect.has(data, 'listItemsPerPage') && typeof data.listItemsPerPage === 'number';
     const hasValidGalleryItemsPerPageValue = Reflect.has(data, 'galleryItemsPerPage') && typeof data.galleryItemsPerPage === 'number';
-    return hasValidThemeValue && hasValidListItemsPerPageValue && hasValidGalleryItemsPerPageValue;
+    const hasValidMaxContentWidthValue = Reflect.has(data, 'maxContentWidth') && typeof data.maxContentWidth === 'string';
+    return hasValidThemeValue && hasValidListItemsPerPageValue && hasValidGalleryItemsPerPageValue && hasValidMaxContentWidthValue;
   }
 }

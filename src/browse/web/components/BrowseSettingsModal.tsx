@@ -111,6 +111,28 @@ function BrowseSettingsModal(props: BrowseSettingsModalProps) {
               }
             </Col>
           </Form.Group>
+
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm={5}>
+              Max. content width:
+            </Form.Label>
+            <Col sm={7}>
+              {
+                <Form.Select
+                  data-setting="maxContentWidth"
+                  data-type="string"
+                  value={settings.maxContentWidth}
+                  onChange={handleSelectChange}
+                >
+                  {
+                    options.maxContentWidth.map((value) => (
+                      <option key={`maxContentWidth-${value}`} value={value}>{value}</option>
+                    ))
+                  }
+                </Form.Select>
+              }
+            </Col>
+          </Form.Group>
         </Form>
       </Modal.Body>
     </Modal>

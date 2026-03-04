@@ -3,18 +3,19 @@ import { type Collection } from "../../../entities/Post";
 import { Card, Stack } from "react-bootstrap";
 import MediaImage from "./MediaImage";
 import FadeContent from "./FadeContent";
+import { useBrowseSettings } from "../contexts/BrowseSettingsProvider";
 
 interface CollectionBannerProps {
   collection: Collection;
 }
 
 function CollectionBanner({ collection }: CollectionBannerProps) {
-
+  const { settings } = useBrowseSettings();
   const thumbnailId = collection.thumbnail?.downloaded?.path ? collection.thumbnail.id : null;
   const nodesc = !collection.description;
 
   return (
-    <Card className={`collection-banner w-100 mb-3 ${nodesc ? 'collection-banner--nodesc' : ''}`}>
+    <Card className={`collection-banner w-100 mb-3 mw-${settings.maxContentWidth.toLowerCase()} ${nodesc ? 'collection-banner--nodesc' : ''}`}>
       <FadeContent maxHeight={130}>
         <Card.Body className="d-flex p-0">
           {thumbnailId && (

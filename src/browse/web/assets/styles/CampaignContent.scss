@@ -2,6 +2,14 @@
   width: 100%;
 
   &--post {
-    max-width: 40.5em;
+    &.mw-narrower {
+      max-width: 40.5em;
+    }
+    &.mw-standard {
+      max-width: 47.5em;
+    }
+    &.mw-wider {
+      max-width: 54.5em;
+    }
   }
 }

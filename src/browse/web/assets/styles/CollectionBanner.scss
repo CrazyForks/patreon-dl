@@ -4,7 +4,16 @@
   overflow: hidden;
   border: none;
   border-radius: 0;
-  max-width: 40.5em;
+
+  &.mw-narrower {
+    max-width: 40.5em;
+  }
+  &.mw-standard {
+    max-width: 47.5em;
+  }
+  &.mw-wider {
+    max-width: 54.5em;
+  }
 
   &__thumbnail {
     z-index: 100; // This is to keep thumbnail above the fade-content overlay

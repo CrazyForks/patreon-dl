@@ -48,6 +48,9 @@ function BrowseSettingsProvider(props: SettingsProviderProps) {
     if (values.galleryItemsPerPage) {
       newSettings.galleryItemsPerPage = values.galleryItemsPerPage;
     }
+    if (values.maxContentWidth) {
+      newSettings.maxContentWidth = values.maxContentWidth;
+    }
     void (async () => {
       if (!deepEqual(settings, newSettings)) {
         await api.saveBrowseSettings(newSettings);

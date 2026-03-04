@@ -310,7 +310,7 @@ function CampaignContent<T extends ContentType>(props: CampaignContentProps<T>) 
   }
 
   return (
-    <div className={`campaign-content campaign-content--${contentType}`}>
+    <div className={`campaign-content campaign-content--${contentType} mw-${settings.maxContentWidth.toLowerCase()}`}>
       <Container fluid className="p-0">
         <Row className="mb-3 g-0 align-items-center">
           <Col className="w-auto d-flex justify-content-end">

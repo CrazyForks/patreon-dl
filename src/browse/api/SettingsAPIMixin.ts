@@ -46,7 +46,8 @@ const THEMES: BrowseTheme[] = [
 const DEFAULT_BROWSE_SETTINGS: BrowseSettings = {
   theme: THEMES[0].value,
   listItemsPerPage: 20,
-  galleryItemsPerPage: 100
+  galleryItemsPerPage: 100,
+  maxContentWidth: 'Standard'
 };
 
 export function SettingsAPIMixin<TBase extends APIConstructor>(Base: TBase) {
@@ -70,7 +71,8 @@ export function SettingsAPIMixin<TBase extends APIConstructor>(Base: TBase) {
       return {
         themes: THEMES,
         listItemsPerPage: [10, 20, 30, 50],
-        galleryItemsPerPage: [50, 100, 150, 200]
+        galleryItemsPerPage: [50, 100, 150, 200],
+        maxContentWidth: ['Narrower', 'Standard', 'Wider']
       };
     }
   }
