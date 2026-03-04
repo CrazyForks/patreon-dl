@@ -1,3 +1,4 @@
+import "../assets/styles/AboutCampaign.scss";
 import "../assets/styles/Slider.scss";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAPI } from "../contexts/APIProvider";
@@ -117,12 +118,12 @@ function AboutCampaign() {
   }, [campaign, containerWidth]);
 
   return (
-    <Stack ref={containerRef} className="w-100">
+    <Stack ref={containerRef} className="w-100 about-campaign">
       {rewardSlider}
       {
         campaign ? (
           <div
-            className="mb-4"
+            className="mb-4 about-campaign__summary"
             dangerouslySetInnerHTML={{__html: campaign.summary || ''}}
           />
         ) : null

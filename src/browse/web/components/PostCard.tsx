@@ -192,7 +192,7 @@ function PostCard(props: PostCardProps) {
         }
       </Stack>
       { audio }
-      <Card.Text dangerouslySetInnerHTML={{__html: post.content || ''}} />
+      <Card.Text className="post-card__content" dangerouslySetInnerHTML={{__html: post.content || ''}} />
       { attachments }
     </Stack>
   );

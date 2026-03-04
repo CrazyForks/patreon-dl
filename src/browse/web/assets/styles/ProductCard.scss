@@ -3,6 +3,12 @@
 .product-card {
   width: 100%;
 
+  &__description {
+    img {
+      max-width: 100%;
+    }
+  }
+
   &--compact {
     .product-card__description {
       display: none;
