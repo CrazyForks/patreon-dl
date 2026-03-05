@@ -318,6 +318,7 @@ export default class ProductDownloader extends Downloader<Product> {
         previewMedia.length > 0 ? {
           target: previewMedia,
           targetName: `product #${product.id} -> preview media`,
+          src: product,
           dirs: {
             campaign: campaignDir,
             main: productDirs.previewMedia,
@@ -329,6 +330,7 @@ export default class ProductDownloader extends Downloader<Product> {
         contentMedia.length > 0 ? {
           target: contentMedia,
           targetName: `product #${product.id} -> content media`,
+          src: product,
           dirs: {
             campaign: campaignDir,
             main: productDirs.contentMedia,

@@ -99,6 +99,10 @@ A format must contain at least one of the following fields:
 In addition, a format can contain the following fields:
 - `media.type`: type of item (e.g. 'image' or 'video')
 - `media.variant`: where applicable, the variant of the item (e.g. 'original', 'thumbnailSmall'...for images)
+- `src.type`: the type of the items's source: 'post', 'product', 'campaign' or 'collection'
+- `src.id`: the ID of the items's source
+- `src.title`: title of the item's source
+- `src.date`: the publish / creation date of the item's source
 
 > If `media.variant` is not included in the format, it will be appended to it if `allMediaVariants` is `true`.
 

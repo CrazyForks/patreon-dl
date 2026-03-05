@@ -26,7 +26,7 @@ import DB, { type DBInstance } from '../browse/db/index.js';
 import PostParser from '../parsers/PostParser.js';
 import { isDenoInstalled } from '../utils/Misc.js';
 import { type Product } from '../entities/Product.js';
-import { type Post } from '../entities/Post.js';
+import { Collection, type Post } from '../entities/Post.js';
 
 export type DownloaderConfig<T extends DownloaderType> =
   DownloaderInit &
@@ -42,9 +42,10 @@ export type GetCampaignParams =
   { userId?: never; vanity: string, campaignId?: never; } |
   { vanity?: never; userId?: never; campaignId: string; };
 
-interface CreateDownloadTaskParams {
+interface CreateDownloadTaskParams<T extends DownloaderType> {
   target: Downloadable[];
   targetName: string;
+  src: T | Campaign | Collection,
   dirs: {
     campaign: string | null;
     main: string;
@@ -98,7 +99,7 @@ export default abstract class Downloader<T extends DownloaderType> extends Event
   protected createDownloadTaskBatch(
     name: string,
     signal?: AbortSignal,
-    ...createTasks: Array<CreateDownloadTaskParams | null>
+    ...createTasks: Array<CreateDownloadTaskParams<T> | null>
   ): Promise<{ batch: DownloadTaskBatch; errorCount: number; }> {
 
     const __getDownloadIdString = (task: IDownloadTask, batch: DownloadTaskBatch) => {
@@ -192,14 +193,14 @@ export default abstract class Downloader<T extends DownloaderType> extends Event
   protected async addToDownloadTaskBatch(
     batch: DownloadTaskBatch,
     signal?: AbortSignal,
-    ...createTasks: Array<CreateDownloadTaskParams | null>
+    ...createTasks: Array<CreateDownloadTaskParams<T> | null>
   ) {
     let failedCreateTaskCount = 0;
     for (const task of createTasks) {
       if (!task) {
         continue;
       }
-      const { target, targetName, dirs } = task;
+      const { target, targetName, src, dirs } = task;
       this.log('info', `Create download tasks for ${targetName}`);
       if (task.target.length === 0) {
         this.log('warn', `No items in ${targetName}`);
@@ -212,6 +213,7 @@ export default abstract class Downloader<T extends DownloaderType> extends Event
             config: this.config,
             dirs,
             item: tt,
+            src,
             fetcher: this.fetcher,
             fileExistsAction: task.fileExistsAction,
             isAttachment: task.isAttachment,
@@ -490,6 +492,7 @@ export default abstract class Downloader<T extends DownloaderType> extends Event
       {
         target: campaignMedia,
         targetName: `campaign #${campaign.id} -> images`,
+        src: campaign,
         dirs: {
           campaign: campaignDirs.root,
           main: campaignDirs.info,

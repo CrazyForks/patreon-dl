@@ -547,6 +547,7 @@ export default class PostDownloader extends Downloader<Post> {
                 {
                   target: infoElements,
                   targetName: `post #${post.id} -> info elements`,
+                  src: post,
                   dirs: {
                     campaign: post.campaign ? this.fsHelper.getCampaignDirs(post.campaign).root : null,
                     main: postDirs.info,
@@ -719,6 +720,7 @@ export default class PostDownloader extends Downloader<Post> {
         return {
           target: [ post.embed ],
           targetName: `post #${post.id} -> embedded ${post.embed.provider}${embedType}`,
+          src: post,
           dirs: {
             campaign: post.campaign ? this.fsHelper.getCampaignDirs(post.campaign).root : null,
             main: postDirs.embed,
@@ -750,6 +752,7 @@ export default class PostDownloader extends Downloader<Post> {
       __incPreview('audio') && post.audioPreview ? {
         target: [ post.audioPreview ],
         targetName: `post #${post.id} -> audio preview`,
+        src: post,
         dirs: {
           campaign: campaignDir,
           main: postDirs.audioPreview,
@@ -761,6 +764,7 @@ export default class PostDownloader extends Downloader<Post> {
       __incPreview('video') && post.videoPreview ? {
         target: [ post.videoPreview ],
         targetName: `post #${post.id} -> video preview`,
+        src: post,
         dirs: {
           campaign: campaignDir,
           main: postDirs.videoPreview,
@@ -776,6 +780,7 @@ export default class PostDownloader extends Downloader<Post> {
       __incPreview('image') && post.images.length > 0 && !post.isViewable ? {
         target: post.images,
         targetName: `post #${post.id} -> image previews`,
+        src: post,
         dirs: {
           campaign: campaignDir,
           main: postDirs.imagePreviews,
@@ -791,6 +796,7 @@ export default class PostDownloader extends Downloader<Post> {
       __incContent('audio') && post.audio && (post.isViewable || (post.audio.type === 'audio' && post.audio.url)) ? {
         target: [ post.audio ],
         targetName: `post #${post.id} -> audio`,
+        src: post,
         dirs: {
           campaign: campaignDir,
           main: postDirs.audio,
@@ -802,6 +808,7 @@ export default class PostDownloader extends Downloader<Post> {
       __incContent('video') && post.video ? {
         target: [ post.video ],
         targetName: `post #${post.id} -> video`,
+        src: post,
         dirs: {
           campaign: campaignDir,
           main: postDirs.video,
@@ -813,6 +820,7 @@ export default class PostDownloader extends Downloader<Post> {
       __incContent('image') && post.images.length > 0 && post.isViewable ? {
         target: post.images,
         targetName: `post #${post.id} -> images`,
+        src: post,
         dirs: {
           campaign: campaignDir,
           main: postDirs.images,
@@ -824,6 +832,7 @@ export default class PostDownloader extends Downloader<Post> {
       __incContent('attachment') && allAttachments.length > 0 ? {
         target: allAttachments,
         targetName: `post #${post.id} -> attachments`,
+        src: post,
         dirs: {
           campaign: campaignDir,
           main: postDirs.attachments,
@@ -1074,6 +1083,7 @@ export default class PostDownloader extends Downloader<Post> {
         {
           target: collectionMedia,
           targetName: `collection #${campaign.id} -> thumbnail`,
+          src: collection,
           dirs: {
             campaign: this.fsHelper.getCampaignDirs(campaign).root,
             main: collectionDirs.root,

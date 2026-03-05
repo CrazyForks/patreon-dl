@@ -4,14 +4,19 @@ import { type MediaLike } from '../entities/MediaItem.js';
 import FilenameResolver from './FllenameResolver.js';
 import URLHelper from './URLHelper.js';
 import FilenameFormatHelper from './FilenameFormatHelper.js';
+import { Collection, Post } from '../entities/Post.js';
+import { Campaign } from '../entities/Campaign.js';
+import { Product } from '../entities/Product.js';
 
 export default class MediaFilenameResolver<T extends MediaLike> extends FilenameResolver<T> {
 
   #format: string;
   #variant: string | null;
+  #src: Post | Product | Campaign | Collection;
 
-  constructor(target: T, srcURL: string, format: string, variant: string | null, ensureVariant: boolean) {
+  constructor(target: T, srcURL: string, src: Post | Product | Campaign | Collection, format: string, variant: string | null, ensureVariant: boolean) {
     super(target, srcURL);
+    this.#src = src;
     this.#format = format;
     this.#variant = variant;
 
@@ -83,6 +88,6 @@ export default class MediaFilenameResolver<T extends MediaLike> extends Filename
       variant: this.#variant
     };
 
-    return FilenameFormatHelper.getMediaFilename(tmpMI, this.#format, filenameParts.ext);
+    return FilenameFormatHelper.getMediaFilename(tmpMI, this.#src, this.#format, filenameParts.ext);
   }
 }

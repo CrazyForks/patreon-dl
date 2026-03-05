@@ -1,3 +1,4 @@
+import dateFormat from 'dateformat';
 import { type Campaign } from '../entities/Campaign.js';
 import { type MediaLike } from '../entities/MediaItem.js';
 import { type Product } from '../entities/Product.js';
@@ -41,7 +42,11 @@ type MediaFilenameFormatFieldName =
   'media.id' |
   'media.type' |
   'media.filename' |
-  'media.variant';
+  'media.variant' |
+  'src.id' |
+  'src.type' |
+  'src.title' |
+  'src.date';
 
 export const MEDIA_FILENAME_VALIDATION_SCHEMA: FormatFieldRules<MediaFilenameFormatFieldName> = [
   { name: 'media.id', atLeastOneOf: true },
@@ -104,12 +109,59 @@ export default class FilenameFormatHelper {
     return this.#getFilename(format, dict, CONTENT_DIR_NAME_VALIDATION_SCHEMA, CONTENT_DIR_NAME_FALLBACK_FORMAT);
   }
 
-  static getMediaFilename(media: MediaLike & { variant: string | null }, format: string, ext: string): string {
+  static getMediaFilename(
+    media: MediaLike & { variant: string | null },
+    src: Post | Product | Campaign | Collection,
+    format: string,
+    ext: string
+  ): string {
+    let srcFields: Pick<FormatFieldValues<MediaFilenameFormatFieldName>, 'src.id' | 'src.type' | 'src.title' | 'src.date'>;
+    switch (src.type) {
+      case 'post':
+        srcFields = {
+          'src.id': src.id,
+          'src.type': src.type,
+          'src.date': src.publishedAt,
+          'src.title': src.title
+        };
+        break;
+      case 'product':
+        srcFields = {
+          'src.id': src.id,
+          'src.type': src.type,
+          'src.date': src.publishedAt,
+          'src.title': src.name
+        };
+        break;
+      case 'campaign':
+        srcFields = {
+          'src.id': src.id,
+          'src.type': src.type,
+          'src.date': src.createdAt,
+          'src.title': src.name
+        };
+        break;
+      case 'collection':
+        srcFields = {
+          'src.id': src.id,
+          'src.type': src.type,
+          'src.date': src.createdAt,
+          'src.title': src.title
+        };
+        break;
+    }
+    try {
+      srcFields['src.date'] = dateFormat(new Date(srcFields['src.date']), 'yyyy-mm-dd_HH-MM');
+    }
+    catch (_) {
+      // Do nothing
+    }
     const dict: FormatFieldValues<MediaFilenameFormatFieldName> = {
       'media.id': media.id,
       'media.type': media.type,
       'media.filename': media.filename,
-      'media.variant': media.variant
+      'media.variant': media.variant,
+      ...srcFields
     };
 
     return this.#getFilename(format, dict, MEDIA_FILENAME_VALIDATION_SCHEMA, MEDIA_FILENAME_FALLBACK_FORMAT, ext);

@@ -13,6 +13,9 @@ import ExternalDownloaderTask from './ExternalDownloaderTask.js';
 import { type DownloaderConfig } from '../Downloader.js';
 import type Bottleneck from 'bottleneck';
 import ThumbnailFilenameResolver from '../../utils/ThmbnailFilenameResolver.js';
+import { Collection, Post } from '../../entities/Post.js';
+import { Product } from '../../entities/Product.js';
+import { Campaign } from '../../entities/Campaign.js';
 
 const DEFAULT_IMAGE_URL_PRIORITY = [
   'original',
@@ -145,6 +148,7 @@ export default class DownloadTaskFactory {
       thumbnails: string | null;
     },
     item: Downloadable,
+    src: Post | Product | Campaign | Collection,
     isAttachment?: boolean,
     fetcher: Fetcher,
     fileExistsAction: FileExistsAction,
@@ -158,6 +162,7 @@ export default class DownloadTaskFactory {
       config,
       dirs,
       item,
+      src,
       isAttachment = false,
       fetcher,
       fileExistsAction,
@@ -202,7 +207,7 @@ export default class DownloadTaskFactory {
       const urlToTasks: DownloadTask[] = [];
       for (const [ variant, url ] of Object.entries(srcURLs)) {
         const destFilenameResolver = 
-          new MediaFilenameResolver(item, url, destFilenameFormat,
+          new MediaFilenameResolver(item, url, src, destFilenameFormat,
             variant !== NULL_VARIANT ? variant : null, downloadAllVariants);
 
         if (signal?.aborted) {
@@ -286,6 +291,7 @@ export default class DownloadTaskFactory {
           config: __config,
           dirs,
           item: videoThumbnailMediaItem,
+          src,
           fetcher,
           fileExistsAction,
           callbacks,
