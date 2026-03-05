@@ -793,19 +793,26 @@ export function ContentDBMixin<TBase extends CampaignDBConstructor>(Base: TBase)
       }));
     }
 
-    checkContentExists(id: string, contentType: ContentType, campaign: Campaign | null) {
+    checkContentExists(id: string, contentType: ContentType, campaign?: Campaign | null) {
       this.log('debug', `Check if ${contentType} #${id} exists in DB`);
+      const whereClauseParts = [
+        'content_id = ?',
+        'content_type = ?'
+      ];
+      const whereValues = [id, contentType];
+      if (campaign !== undefined) {
+        whereClauseParts.push('campaign_id = ?');
+        whereValues.push(campaign?.id || '-1');
+      }
+      const whereClause = `WHERE ${whereClauseParts.join(' AND ')}`;
       try {
         const result = this.get(
           `
           SELECT COUNT(*) as count
           FROM content
-          WHERE
-            content_id = ? AND
-            content_type = ? AND
-            campaign_id = ?
+          ${whereClause}
           `,
-          [ id, contentType, campaign?.id || '-1' ]
+          whereValues
         );
         return result.count > 0;
       } catch (error) {

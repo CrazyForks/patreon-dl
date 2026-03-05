@@ -1,4 +1,4 @@
-import { load as cheerioLoad } from 'cheerio';
+import { CheerioAPI, load as cheerioLoad } from 'cheerio';
 import { type APIConstructor } from ".";
 import { type Product, type Post } from "../../entities";
 import { type GetContentContext, type ContentListSortBy, type ContentType, type GetContentListParams, type GetCollectionListParams, type CollectionListSortBy, type GetPostTagListParams } from "../types/Content.js";
@@ -24,7 +24,7 @@ export function ContentAPIMixin<TBase extends APIConstructor>(Base: TBase) {
       for (const item of list.items) {
         switch (item.type) {
           case 'post':
-            this.#processPostContentInlineMedia(item);
+            this.#processPostContentElements(item);
             item.content = this.sanitizeHTML(item.content || '');
             break;
           case 'product': {
@@ -40,7 +40,7 @@ export function ContentAPIMixin<TBase extends APIConstructor>(Base: TBase) {
     getPost(id: string) {
       const post = this.db.getContent(id, 'post');
       if (post) {
-        this.#processPostContentInlineMedia(post);
+        this.#processPostContentElements(post);
         post.content = this.sanitizeHTML(post.content || '');
       }
       return post;
@@ -80,19 +80,32 @@ export function ContentAPIMixin<TBase extends APIConstructor>(Base: TBase) {
       });
     }
 
-    #processPostContentInlineMedia(post: Post) {
+    #processPostContentElements(post: Post) {
       const html = post.content || '';
-      const hasImages = post.images.length > 0;
-      const hasLinkedAttachments = post.linkedAttachments && post.linkedAttachments.length > 0;
-      if (!html || (!hasImages && !hasLinkedAttachments)) {
+      
+      if (!html) {
         return;
       }
 
       const $ = cheerioLoad(html);
-      const replacedMediaIds: string[] = [];
-      let hasModified = false;
+      const inlineMediaModified = this.#processInlineMedia($, post);
+      const inlineLinksModified = this.#processInlineLinks($);
+      if (inlineMediaModified || inlineLinksModified) {
+        post.content = $.html();
+      }
+    }
 
+    #processInlineMedia($: CheerioAPI, post: Post) {
+      const hasImages = post.images.length > 0;
+      const hasLinkedAttachments = post.linkedAttachments && post.linkedAttachments.length > 0;
+      if (!hasImages && !hasLinkedAttachments) {
+        return false;
+      }
+      let hasModified = false;
+      
+      // Images
       if (hasImages) {
+        const replacedMediaIds: string[] = [];
         $('img').each((_, _el) => {
           const el = $(_el);
           const id = el.attr('data-media-id');
@@ -148,9 +161,32 @@ export function ContentAPIMixin<TBase extends APIConstructor>(Base: TBase) {
         });
       }
 
-      if (hasModified) {
-        post.content = $.html();
-      }
+      return hasModified;
+    }
+
+    #processInlineLinks($: CheerioAPI) {
+      let hasModified = false;
+      $('a').each((_, _el) => {
+        const el = $(_el);
+        const href = el.attr('href') || '';
+        let an;
+        try {
+          an = href.startsWith('https://') ? URLHelper.analyzeURL(href) : null;
+        }
+        catch (error: unknown) { 
+          this.log('warn', `Error analyzing inline link "${href}"`);
+          an = null;
+        }
+        if (an && an.type === 'post') {
+          const postExistsInDB = this.db.checkContentExists(an.postId, 'post');
+          if (postExistsInDB) {
+            el.attr('href', `/posts/${an.postId}`);
+            el.removeAttr('target');
+            hasModified = true;
+          }
+        }
+      });
+      return hasModified;
     }
   }
 }
