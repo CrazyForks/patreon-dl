@@ -9,7 +9,12 @@ import { createProxyAgent } from '../Proxy.js';
 import { spawn } from 'child_process';
 import ObjectHelper from '../ObjectHelper.js';
 import { isDenoInstalled } from '../Misc.js';
-import { PoTokenMinter } from './PoToken.js';
+import { PoTokenMinter, POTokenMinterWrapper } from './PoToken.js';
+
+/**
+ * Current implementation uses TV client for fetching videos. It does not require PO tokens.
+ */
+const USE_PO_TOKEN = false;
 
 export interface InnertubeLoaderGetInstanceResult {
   innertube: Innertube;
@@ -33,6 +38,24 @@ Platform.shim.eval = (data: InnertubeLib.Types.BuildScriptResult, env: Record<st
   return InnertubeLoader.eval(code);
 };
 
+/**
+ * Creates an Innertube instance for fetching YouTube video info.
+ * 
+ * The current implementation fetches videos with the "TV" client.
+ * With this client, YouTube requires login most of the time.
+ * It's unclear if this is transitioning into a global requirement or if
+ * the IP address has just been flagged.
+ * 
+ * Other clients tested and failed to work:
+ * - WEB: only SABR streams available
+ * - WEB_EMBEDDED: "Video is unavailable" error
+ * - ANDROID: "Precondition check failed" error
+ * - MWEB: stream url returns 403 error even with PO token set -- maybe I'm doing it wrongly
+ * 
+ * yt-dlp uses android_vr client, which is not yet available in Innertube, and does not
+ * require login. From a maintenance and practicality perspective, yt-dlp is
+ * the tool of choice going forward that will eventually replace the built-in YT downloader.
+ */
 export default class InnertubeLoader {
 
   static #name = 'InnertubeLoader';
@@ -86,8 +109,13 @@ export default class InnertubeLoader {
   static async #createInstance(resolve: (value: InnertubeLoaderGetInstanceResult) => void) {
     this.log('debug', 'Create Innertube instance...');
     const credentials = this.#loadCredentials();
+    const minter = PoTokenMinter.createInstance({ proxyAgent: this.#proxy });
+    const sessionPot = USE_PO_TOKEN ? await this.#generateSessionPot(minter) : undefined;
     const innertube = await Innertube.create({
-      client_type: InnertubeLib.ClientType.TV,
+      // Force specific player_id previously known to work to circumvent n/sig decipher
+      // function extraction error. This is just a temporary fix.
+      player_id: '9f4cc5e4',
+      po_token: sessionPot,
       fetch: (input, init) => Platform.shim.fetch(input, { ...init, dispatcher: this.#proxy } as any)
     });
     if (credentials) {
@@ -119,27 +147,43 @@ export default class InnertubeLoader {
         this.log('warn', 'YouTube sign-in failed. Continuing without sign-in.');
       }
     }
-   this.#resolveGetInstanceResult(innertube, resolve);
+   this.#resolveGetInstanceResult(innertube, minter, resolve);
   }
 
-  static #resolveGetInstanceResult(innertube: Innertube, resolve: (value: InnertubeLoaderGetInstanceResult) => void) {
+  static async #generateSessionPot(minter: POTokenMinterWrapper) {
+    const innertube = await Innertube.create({
+      player_id: '9f4cc5e4',
+      fetch: (input, init) => Platform.shim.fetch(input, { ...init, dispatcher: this.#proxy } as any)
+    });
+    const visitorData = innertube.session.context.client.visitorData;
+    if (visitorData) {
+      const sessionPot = await minter.pot(visitorData);
+      this.log('debug', 'Generated session PO token from visitorData:', sessionPot);
+      return sessionPot;
+    }
+    this.log('warn', 'visitorData not found - no session PO token used');
+  }
+
+  static #resolveGetInstanceResult(innertube: Innertube, minter: POTokenMinterWrapper, resolve: (value: InnertubeLoaderGetInstanceResult) => void) {
     this.#pendingPromise = null;
     const signedIn = innertube.session.logged_in;
     this.log('debug', 'Create YouTube PO token minter');
-    const minter = PoTokenMinter.createInstance({ proxyAgent: this.#proxy });
     this.#instanceResult = {
       innertube,
       getVideoInfo: async (videoId) => {
-        let pot;
-        try {
-          pot = await minter.pot(videoId);
-          this.log('debug', `Obtained PO token for YouTube video ${videoId}: `, pot);
+        let pot: string | undefined = undefined;
+        if (USE_PO_TOKEN) {
+          try {
+            pot = await minter.pot(videoId);
+            this.log('debug', `Obtained PO token for YouTube video ${videoId}: `, pot);
+          }
+          catch (error) {
+            this.log('warn', `Could not obtain PO token for YouTube video ${videoId}:`, error);
+            pot = undefined;
+          }
         }
-        catch (error) {
-          this.log('warn', `Could not obtain PO token for YouTube video ${videoId}:`, error);
-          pot = undefined;
-        }
-        return innertube.getBasicInfo(videoId, { client: 'WEB_EMBEDDED', po_token: pot })
+        const info = await innertube.getBasicInfo(videoId, { client: 'TV', po_token: pot });
+        return info;
       },
       dispose: () => {
         minter.dispose();

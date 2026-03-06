@@ -299,8 +299,11 @@ export default class YouTubeDownloadTask extends FFmpegDownloadTaskBase<YouTubeP
     this.log('debug', `Choose best-quality stream for YouTube video #${video.basic_info.id}`);
     const stream = await this.#pickStream(video);
     if (!stream) {
-      const errMsg = `Stream not found for YouTube video #${video.basic_info.id}`;
+      const errMsg = `Stream not found for YouTube video #${video.basic_info.id || videoId}`;
       this.log('error', errMsg);
+      if (video.playability_status) {
+        this.log('error', `The playability status of the video is: ${video.playability_status.status} - ${video.playability_status.reason}`);
+      }
       throw Error(errMsg);
     }
 
@@ -405,7 +408,9 @@ export default class YouTubeDownloadTask extends FFmpegDownloadTaskBase<YouTubeP
 
   async #resolveURL(url: string): Promise<string> {
     if (!YouTubeDownloadTask.#innertubeForResolveURL) {
-      YouTubeDownloadTask.#innertubeForResolveURL = await InnertubeLib.Innertube.create();
+      YouTubeDownloadTask.#innertubeForResolveURL = await InnertubeLib.Innertube.create({
+        player_id: '9f4cc5e4'
+      });
     }
     const innertube = YouTubeDownloadTask.#innertubeForResolveURL;
     const endpoint = await innertube.resolveURL(url);
