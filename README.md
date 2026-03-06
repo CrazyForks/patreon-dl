@@ -60,15 +60,15 @@ path.to.deno = "path/to/deno"
 ...
 ```
 
-#### Premium access
+#### Premium access / "Login required" error
 
-If you have a YouTube Premium subscription, you can connect `patreon-dl` to your account and download videos at qualities available only to Premium accounts (e.g. '1080p Premium'). For CLI users, you would configure `patreon-dl` as follows:
+If you have a YouTube Premium subscription, you can connect `patreon-dl` to your account and download videos at qualities available only to Premium accounts (e.g. '1080p Premium'). You will also need to connect to an account (not necessarily Premium) if you get a "Login required" error message during download.
+
+For CLI users, you would configure `patreon-dl` as follows:
 
 ```
 $ patreon-dl --configure-youtube
 ```
-
-> ...or you may just refer to the next section on how to download enhanecd-quality videos without a Premium account.
 
 ### Embedded videos / links - external downloader
 
@@ -109,7 +109,7 @@ $ patreon-dl [OPTION]... URL
 | `--dry-run`   |      | Run without writing files to disk (except logs, if any). Intended for testing / debugging. |
 | <code><nobr>--list-tiers &lt;creator&gt;</nobr></code> | | <p>List tiers for the given creator(s). Separate multiple creators with a comma.</p>The purpose of this is to let you find out what tier IDs to set for `posts.in.tier` filtering option under `include` section of [configuration file](#configuration-file). |
 | <code><nobr>--list-tiers-uid &lt;user ID&gt;</nobr></code> | | Same as `--list-tiers`, but takes user ID instead of vanity. |
-| `--configure-youtube` | | <p>Configure YouTube connection.</p>`patreon-dl` supports downloading embedded YouTube videos. If you have a YouTube Premium account, you can connect `patreon-dl` to it for downloading Premium-quality streams. |
+| `--configure-youtube` | | <p>Configure YouTube connection.</p>`patreon-dl` supports downloading embedded YouTube videos. If you have a YouTube Premium account, you can connect `patreon-dl` to it for downloading Premium-quality streams. You will also need to connect to an account if you get a "Login required" error message during download.|
 
 ### URL
 
