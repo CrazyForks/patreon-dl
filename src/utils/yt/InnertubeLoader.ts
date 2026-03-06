@@ -1,5 +1,5 @@
 import Innertube, { Platform } from 'youtubei.js';
-import * as InnertubeLib from 'youtubei.js';
+import type * as InnertubeLib from 'youtubei.js';
 import fse from 'fs-extra';
 import { type Dispatcher } from 'undici';
 import type Logger from '../logging/Logger.js';
@@ -9,7 +9,7 @@ import { createProxyAgent } from '../Proxy.js';
 import { spawn } from 'child_process';
 import ObjectHelper from '../ObjectHelper.js';
 import { isDenoInstalled } from '../Misc.js';
-import { PoTokenMinter, POTokenMinterWrapper } from './PoToken.js';
+import { PoTokenMinter, type POTokenMinterWrapper } from './PoToken.js';
 
 /**
  * Current implementation uses TV client for fetching videos. It does not require PO tokens.

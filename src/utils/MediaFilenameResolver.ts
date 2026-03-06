@@ -4,9 +4,9 @@ import { type MediaLike } from '../entities/MediaItem.js';
 import FilenameResolver from './FllenameResolver.js';
 import URLHelper from './URLHelper.js';
 import FilenameFormatHelper from './FilenameFormatHelper.js';
-import { Collection, Post } from '../entities/Post.js';
-import { Campaign } from '../entities/Campaign.js';
-import { Product } from '../entities/Product.js';
+import { type Collection, type Post } from '../entities/Post.js';
+import { type Campaign } from '../entities/Campaign.js';
+import { type Product } from '../entities/Product.js';
 
 export default class MediaFilenameResolver<T extends MediaLike> extends FilenameResolver<T> {
 

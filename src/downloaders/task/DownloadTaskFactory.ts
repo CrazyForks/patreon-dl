@@ -13,9 +13,9 @@ import ExternalDownloaderTask from './ExternalDownloaderTask.js';
 import { type DownloaderConfig } from '../Downloader.js';
 import type Bottleneck from 'bottleneck';
 import ThumbnailFilenameResolver from '../../utils/ThmbnailFilenameResolver.js';
-import { Collection, Post } from '../../entities/Post.js';
-import { Product } from '../../entities/Product.js';
-import { Campaign } from '../../entities/Campaign.js';
+import { type Collection, type Post } from '../../entities/Post.js';
+import { type Product } from '../../entities/Product.js';
+import { type Campaign } from '../../entities/Campaign.js';
 
 const DEFAULT_IMAGE_URL_PRIORITY = [
   'original',

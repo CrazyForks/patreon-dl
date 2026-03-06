@@ -385,7 +385,7 @@ export default class PostParser extends Parser {
             parsedHTML += `<a href="${linkMark.attrs.href}" target="_blank">${node.text || ''}</a>`;
           } else {
             // You can expand this to handle bold, italic, etc.
-            parsedHTML += (node.text || '');
+            parsedHTML += (String(node.text) || '');
           }
         } else if (node.type === 'paragraph' || node.type === 'heading' || node.type === 'listItem') {
           parsedHTML += '<p>';

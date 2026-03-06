@@ -26,7 +26,7 @@ import DB, { type DBInstance } from '../browse/db/index.js';
 import PostParser from '../parsers/PostParser.js';
 import { isDenoInstalled } from '../utils/Misc.js';
 import { type Product } from '../entities/Product.js';
-import { Collection, type Post } from '../entities/Post.js';
+import { type Collection, type Post } from '../entities/Post.js';
 
 export type DownloaderConfig<T extends DownloaderType> =
   DownloaderInit &

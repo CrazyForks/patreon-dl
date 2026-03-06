@@ -10,7 +10,7 @@ import { type PostFilterSearchParams } from "../../types/Filter";
 import { type UnionToTuple } from "../../../utils/Misc";
 import { useScroll } from "../contexts/MainContentScrollProvider";
 import { useBrowseSettings } from "../contexts/BrowseSettingsProvider";
-import { BrowseSettings } from "../../types/Settings";
+import { type BrowseSettings } from "../../types/Settings";
 
 interface PostNav {
   previous: PostWithComments | null;

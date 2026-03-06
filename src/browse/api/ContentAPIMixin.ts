@@ -1,4 +1,4 @@
-import { CheerioAPI, load as cheerioLoad } from 'cheerio';
+import { type CheerioAPI, load as cheerioLoad } from 'cheerio';
 import { type APIConstructor } from ".";
 import { type Product, type Post } from "../../entities";
 import { type GetContentContext, type ContentListSortBy, type ContentType, type GetContentListParams, type GetCollectionListParams, type CollectionListSortBy, type GetPostTagListParams } from "../types/Content.js";
@@ -174,7 +174,7 @@ export function ContentAPIMixin<TBase extends APIConstructor>(Base: TBase) {
           an = href.startsWith('https://') ? URLHelper.analyzeURL(href) : null;
         }
         catch (error: unknown) { 
-          this.log('warn', `Error analyzing inline link "${href}"`);
+          this.log('warn', `Error analyzing inline link "${href}":`, error);
           an = null;
         }
         if (an && an.type === 'post') {
