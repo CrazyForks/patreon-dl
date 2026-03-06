@@ -293,6 +293,14 @@ Note the URL shown in the output. Open this URL in a web browser to begin viewin
 
 ## Changelog
 
+v3.7.0
+- Vimeo download script: fetch full player URL ([#118](https://github.com/patrickkfkan/patreon-dl/issues/118))
+- Fix downloaded posts missing content / teaser ([@Fabelwesen](https://github.com/Fabelwesen) - [#119](https://github.com/patrickkfkan/patreon-dl/issues/119))
+- Add "max content width" option to browse settings ([#122](https://github.com/patrickkfkan/patreon-dl/issues/122))
+- Map inline post links to local server routes (contrib by [@Fabelwesen](https://github.com/Fabelwesen) - [#121](https://github.com/patrickkfkan/patreon-dl/issues/121))
+- Support additional fields in `media.filename.format` ([patreon-dl-gui#51](https://github.com/patrickkfkan/patreon-dl-gui/issues/51))
+- YT downloader: fix error in n/sig decipher function extraction
+
 v3.6.1
 - Fix Embedly download script error on retrying with alternative URL.
 
