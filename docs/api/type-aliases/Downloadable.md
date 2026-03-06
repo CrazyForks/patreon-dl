@@ -8,7 +8,7 @@
 
 > **Downloadable**\<`T`\> = `T` & `object`
 
-Defined in: [src/entities/Downloadable.ts:21](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/entities/Downloadable.ts#L21)
+Defined in: [src/entities/Downloadable.ts:21](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Downloadable.ts#L21)
 
 ## Type declaration
 

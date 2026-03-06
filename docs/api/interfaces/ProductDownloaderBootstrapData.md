@@ -6,7 +6,7 @@
 
 # Interface: ProductDownloaderBootstrapData
 
-Defined in: [src/downloaders/Bootstrap.ts:12](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/downloaders/Bootstrap.ts#L12)
+Defined in: [src/downloaders/Bootstrap.ts:14](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Bootstrap.ts#L14)
 
 ## Extends
 
@@ -16,9 +16,9 @@ Defined in: [src/downloaders/Bootstrap.ts:12](https://github.com/patrickkfkan/pa
 
 ### productFetch
 
-> **productFetch**: \{ `productId`: `string`; `type`: `"single"`; \} \| \{ `campaignId?`: `string`; `type`: `"byShop"`; `vanity`: `string`; \}
+> **productFetch**: \{ `productId`: `string`; `type`: `"single"`; \} \| \{ `campaignId?`: `string`; `type`: `"byShop"`; `vanity`: `string`; \} \| \{ `filePath`: `string`; `type`: `"byFile"`; \}
 
-Defined in: [src/downloaders/Bootstrap.ts:14](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/downloaders/Bootstrap.ts#L14)
+Defined in: [src/downloaders/Bootstrap.ts:16](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Bootstrap.ts#L16)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [src/downloaders/Bootstrap.ts:14](https://github.com/patrickkfkan/pa
 
 > **targetURL**: `string`
 
-Defined in: [src/downloaders/Bootstrap.ts:9](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/downloaders/Bootstrap.ts#L9)
+Defined in: [src/downloaders/Bootstrap.ts:11](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Bootstrap.ts#L11)
 
 #### Inherited from
 
@@ -38,7 +38,7 @@ Defined in: [src/downloaders/Bootstrap.ts:9](https://github.com/patrickkfkan/pat
 
 > **type**: `"product"`
 
-Defined in: [src/downloaders/Bootstrap.ts:13](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/downloaders/Bootstrap.ts#L13)
+Defined in: [src/downloaders/Bootstrap.ts:15](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Bootstrap.ts#L15)
 
 #### Overrides
 

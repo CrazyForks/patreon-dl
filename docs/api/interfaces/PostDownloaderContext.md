@@ -6,7 +6,7 @@
 
 # Interface: PostDownloaderContext
 
-Defined in: [src/downloaders/PostDownloader.ts:24](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/downloaders/PostDownloader.ts#L24)
+Defined in: [src/downloaders/PostDownloader.ts:24](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/PostDownloader.ts#L24)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [src/downloaders/PostDownloader.ts:24](https://github.com/patrickkfk
 
 > `optional` **keepDBOpen**: `boolean`
 
-Defined in: [src/downloaders/PostDownloader.ts:27](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/downloaders/PostDownloader.ts#L27)
+Defined in: [src/downloaders/PostDownloader.ts:27](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/PostDownloader.ts#L27)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [src/downloaders/PostDownloader.ts:27](https://github.com/patrickkfk
 
 > `optional` **keepLoggerOpen**: `boolean`
 
-Defined in: [src/downloaders/PostDownloader.ts:26](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/downloaders/PostDownloader.ts#L26)
+Defined in: [src/downloaders/PostDownloader.ts:26](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/PostDownloader.ts#L26)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [src/downloaders/PostDownloader.ts:26](https://github.com/patrickkfk
 
 > `optional` **skipSaveCampaign**: `boolean`
 
-Defined in: [src/downloaders/PostDownloader.ts:25](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/downloaders/PostDownloader.ts#L25)
+Defined in: [src/downloaders/PostDownloader.ts:25](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/PostDownloader.ts#L25)

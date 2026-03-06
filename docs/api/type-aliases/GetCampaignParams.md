@@ -8,4 +8,4 @@
 
 > **GetCampaignParams** = `string` \| \{ `campaignId?`: `never`; `userId`: `string`; `vanity?`: `never`; \} \| \{ `campaignId?`: `never`; `userId?`: `never`; `vanity`: `string`; \} \| \{ `campaignId`: `string`; `userId?`: `never`; `vanity?`: `never`; \}
 
-Defined in: [src/downloaders/Downloader.ts:39](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/downloaders/Downloader.ts#L39)
+Defined in: [src/downloaders/Downloader.ts:39](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Downloader.ts#L39)

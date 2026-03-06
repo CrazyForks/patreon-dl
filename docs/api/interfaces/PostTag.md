@@ -6,7 +6,7 @@
 
 # Interface: PostTag
 
-Defined in: [src/entities/Post.ts:165](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/entities/Post.ts#L165)
+Defined in: [src/entities/Post.ts:165](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Post.ts#L165)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [src/entities/Post.ts:165](https://github.com/patrickkfkan/patreon-d
 
 > **id**: `string`
 
-Defined in: [src/entities/Post.ts:166](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/entities/Post.ts#L166)
+Defined in: [src/entities/Post.ts:166](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Post.ts#L166)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [src/entities/Post.ts:166](https://github.com/patrickkfkan/patreon-d
 
 > **type**: `"postTag"`
 
-Defined in: [src/entities/Post.ts:167](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/entities/Post.ts#L167)
+Defined in: [src/entities/Post.ts:167](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Post.ts#L167)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [src/entities/Post.ts:167](https://github.com/patrickkfkan/patreon-d
 
 > **value**: `string`
 
-Defined in: [src/entities/Post.ts:168](https://github.com/patrickkfkan/patreon-dl/blob/99df673b92ef4ce3aebc4c26b094ba3e47fad262/src/entities/Post.ts#L168)
+Defined in: [src/entities/Post.ts:168](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Post.ts#L168)
