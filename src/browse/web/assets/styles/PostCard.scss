@@ -31,5 +31,9 @@
     img {
       max-width: 100%;
     }
+
+    p:not(:first-child) {
+      margin: 1rem 0;
+    }
   }
 }
