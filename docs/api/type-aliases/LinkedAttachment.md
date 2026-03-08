@@ -8,7 +8,7 @@
 
 > **LinkedAttachment** = `object`
 
-Defined in: [src/entities/Post.ts:142](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Post.ts#L142)
+Defined in: [src/entities/Post.ts:142](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Post.ts#L142)
 
 ## Properties
 
@@ -16,7 +16,7 @@ Defined in: [src/entities/Post.ts:142](https://github.com/patrickkfkan/patreon-d
 
 > `optional` **downloadable**: [`Downloadable`](Downloadable.md)\<[`AttachmentMediaItem`](../interfaces/AttachmentMediaItem.md)\>
 
-Defined in: [src/entities/Post.ts:147](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Post.ts#L147)
+Defined in: [src/entities/Post.ts:147](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Post.ts#L147)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/entities/Post.ts:147](https://github.com/patrickkfkan/patreon-d
 
 > **mediaId**: `string`
 
-Defined in: [src/entities/Post.ts:146](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Post.ts#L146)
+Defined in: [src/entities/Post.ts:146](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Post.ts#L146)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [src/entities/Post.ts:146](https://github.com/patrickkfkan/patreon-d
 
 > **postId**: `string`
 
-Defined in: [src/entities/Post.ts:145](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Post.ts#L145)
+Defined in: [src/entities/Post.ts:145](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Post.ts#L145)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [src/entities/Post.ts:145](https://github.com/patrickkfkan/patreon-d
 
 > **type**: `"linkedAttachment"`
 
-Defined in: [src/entities/Post.ts:143](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Post.ts#L143)
+Defined in: [src/entities/Post.ts:143](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Post.ts#L143)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [src/entities/Post.ts:143](https://github.com/patrickkfkan/patreon-d
 
 > **url**: `string`
 
-Defined in: [src/entities/Post.ts:144](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Post.ts#L144)
+Defined in: [src/entities/Post.ts:144](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Post.ts#L144)

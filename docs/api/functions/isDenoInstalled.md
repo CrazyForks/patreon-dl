@@ -8,7 +8,7 @@
 
 > **isDenoInstalled**(`pathToDeno?`): [`DenoInstallStatus`](../type-aliases/DenoInstallStatus.md)
 
-Defined in: [src/utils/Misc.ts:96](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/Misc.ts#L96)
+Defined in: [src/utils/Misc.ts:96](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/Misc.ts#L96)
 
 ## Parameters
 

@@ -6,7 +6,7 @@
 
 # Interface: ProductDownloaderBootstrapData
 
-Defined in: [src/downloaders/Bootstrap.ts:14](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Bootstrap.ts#L14)
+Defined in: [src/downloaders/Bootstrap.ts:14](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/downloaders/Bootstrap.ts#L14)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: [src/downloaders/Bootstrap.ts:14](https://github.com/patrickkfkan/pa
 
 > **productFetch**: \{ `productId`: `string`; `type`: `"single"`; \} \| \{ `campaignId?`: `string`; `type`: `"byShop"`; `vanity`: `string`; \} \| \{ `filePath`: `string`; `type`: `"byFile"`; \}
 
-Defined in: [src/downloaders/Bootstrap.ts:16](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Bootstrap.ts#L16)
+Defined in: [src/downloaders/Bootstrap.ts:16](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/downloaders/Bootstrap.ts#L16)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [src/downloaders/Bootstrap.ts:16](https://github.com/patrickkfkan/pa
 
 > **targetURL**: `string`
 
-Defined in: [src/downloaders/Bootstrap.ts:11](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Bootstrap.ts#L11)
+Defined in: [src/downloaders/Bootstrap.ts:11](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/downloaders/Bootstrap.ts#L11)
 
 #### Inherited from
 
@@ -38,7 +38,7 @@ Defined in: [src/downloaders/Bootstrap.ts:11](https://github.com/patrickkfkan/pa
 
 > **type**: `"product"`
 
-Defined in: [src/downloaders/Bootstrap.ts:15](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Bootstrap.ts#L15)
+Defined in: [src/downloaders/Bootstrap.ts:15](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/downloaders/Bootstrap.ts#L15)
 
 #### Overrides
 

@@ -6,7 +6,7 @@
 
 # Interface: Product
 
-Defined in: [src/entities/Product.ts:14](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L14)
+Defined in: [src/entities/Product.ts:14](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L14)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [src/entities/Product.ts:14](https://github.com/patrickkfkan/patreon
 
 > **campaign**: `null` \| [`Campaign`](Campaign.md)
 
-Defined in: [src/entities/Product.ts:47](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L47)
+Defined in: [src/entities/Product.ts:47](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L47)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [src/entities/Product.ts:47](https://github.com/patrickkfkan/patreon
 
 > **contentMedia**: [`Downloadable`](../type-aliases/Downloadable.md)[]
 
-Defined in: [src/entities/Product.ts:46](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L46)
+Defined in: [src/entities/Product.ts:46](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L46)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [src/entities/Product.ts:46](https://github.com/patrickkfkan/patreon
 
 > **description**: `null` \| `string`
 
-Defined in: [src/entities/Product.ts:31](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L31)
+Defined in: [src/entities/Product.ts:31](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L31)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [src/entities/Product.ts:31](https://github.com/patrickkfkan/patreon
 
 > `optional` **descriptionText**: `null` \| `string`
 
-Defined in: [src/entities/Product.ts:37](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L37)
+Defined in: [src/entities/Product.ts:37](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L37)
 
 `description` converted to plain text.
 Used by FTS.
@@ -53,7 +53,7 @@ Used by FTS.
 
 > **id**: `string`
 
-Defined in: [src/entities/Product.ts:16](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L16)
+Defined in: [src/entities/Product.ts:16](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L16)
 
 ***
 
@@ -61,7 +61,7 @@ Defined in: [src/entities/Product.ts:16](https://github.com/patrickkfkan/patreon
 
 > **isAccessible**: `boolean`
 
-Defined in: [src/entities/Product.ts:29](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L29)
+Defined in: [src/entities/Product.ts:29](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L29)
 
 ***
 
@@ -69,7 +69,7 @@ Defined in: [src/entities/Product.ts:29](https://github.com/patrickkfkan/patreon
 
 > **name**: `null` \| `string`
 
-Defined in: [src/entities/Product.ts:30](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L30)
+Defined in: [src/entities/Product.ts:30](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L30)
 
 ***
 
@@ -77,7 +77,7 @@ Defined in: [src/entities/Product.ts:30](https://github.com/patrickkfkan/patreon
 
 > **previewMedia**: [`Downloadable`](../type-aliases/Downloadable.md)[]
 
-Defined in: [src/entities/Product.ts:45](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L45)
+Defined in: [src/entities/Product.ts:45](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L45)
 
 ***
 
@@ -85,7 +85,7 @@ Defined in: [src/entities/Product.ts:45](https://github.com/patrickkfkan/patreon
 
 > **price**: `null` \| `string`
 
-Defined in: [src/entities/Product.ts:38](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L38)
+Defined in: [src/entities/Product.ts:38](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L38)
 
 ***
 
@@ -93,7 +93,7 @@ Defined in: [src/entities/Product.ts:38](https://github.com/patrickkfkan/patreon
 
 > `optional` **productType**: `string`
 
-Defined in: [src/entities/Product.ts:22](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L22)
+Defined in: [src/entities/Product.ts:22](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L22)
 
 If `undefined`, assume `ProductType.DigitalCommerce`.
 
@@ -107,7 +107,7 @@ If `undefined`, assume `ProductType.DigitalCommerce`.
 
 > **publishedAt**: `null` \| `string`
 
-Defined in: [src/entities/Product.ts:39](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L39)
+Defined in: [src/entities/Product.ts:39](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L39)
 
 ***
 
@@ -115,7 +115,7 @@ Defined in: [src/entities/Product.ts:39](https://github.com/patrickkfkan/patreon
 
 > **raw**: `object`
 
-Defined in: [src/entities/Product.ts:48](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L48)
+Defined in: [src/entities/Product.ts:48](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L48)
 
 ***
 
@@ -123,7 +123,7 @@ Defined in: [src/entities/Product.ts:48](https://github.com/patrickkfkan/patreon
 
 > `optional` **referencedEntityId**: `string`
 
-Defined in: [src/entities/Product.ts:28](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L28)
+Defined in: [src/entities/Product.ts:28](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L28)
 
 ID of entity referenced according to `productType` (post or collection)
 
@@ -137,7 +137,7 @@ ID of entity referenced according to `productType` (post or collection)
 
 > **type**: `"product"`
 
-Defined in: [src/entities/Product.ts:15](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L15)
+Defined in: [src/entities/Product.ts:15](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L15)
 
 ***
 
@@ -145,4 +145,4 @@ Defined in: [src/entities/Product.ts:15](https://github.com/patrickkfkan/patreon
 
 > **url**: `string`
 
-Defined in: [src/entities/Product.ts:44](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/Product.ts#L44)
+Defined in: [src/entities/Product.ts:44](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/Product.ts#L44)

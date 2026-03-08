@@ -8,7 +8,7 @@
 
 > **DownloadTaskBatchEventPayloadOf**\<`T`\> = [`DownloadTaskBatchEventPayload`](../interfaces/DownloadTaskBatchEventPayload.md)\[`T`\]
 
-Defined in: [src/downloaders/task/DownloadTaskBatchEvent.ts:50](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/task/DownloadTaskBatchEvent.ts#L50)
+Defined in: [src/downloaders/task/DownloadTaskBatchEvent.ts:50](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/downloaders/task/DownloadTaskBatchEvent.ts#L50)
 
 ## Type Parameters
 

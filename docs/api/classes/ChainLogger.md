@@ -6,7 +6,7 @@
 
 # Class: ChainLogger
 
-Defined in: [src/utils/logging/ChainLogger.ts:3](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/logging/ChainLogger.ts#L3)
+Defined in: [src/utils/logging/ChainLogger.ts:3](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/logging/ChainLogger.ts#L3)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: [src/utils/logging/ChainLogger.ts:3](https://github.com/patrickkfkan
 
 > **new ChainLogger**(`loggers?`): `ChainLogger`
 
-Defined in: [src/utils/logging/ChainLogger.ts:7](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/logging/ChainLogger.ts#L7)
+Defined in: [src/utils/logging/ChainLogger.ts:7](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/logging/ChainLogger.ts#L7)
 
 #### Parameters
 
@@ -40,7 +40,7 @@ Defined in: [src/utils/logging/ChainLogger.ts:7](https://github.com/patrickkfkan
 
 > **add**(`logger`): `void`
 
-Defined in: [src/utils/logging/ChainLogger.ts:12](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/logging/ChainLogger.ts#L12)
+Defined in: [src/utils/logging/ChainLogger.ts:12](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/logging/ChainLogger.ts#L12)
 
 #### Parameters
 
@@ -58,7 +58,7 @@ Defined in: [src/utils/logging/ChainLogger.ts:12](https://github.com/patrickkfka
 
 > **clear**(): `void`
 
-Defined in: [src/utils/logging/ChainLogger.ts:23](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/logging/ChainLogger.ts#L23)
+Defined in: [src/utils/logging/ChainLogger.ts:23](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/logging/ChainLogger.ts#L23)
 
 #### Returns
 
@@ -70,7 +70,7 @@ Defined in: [src/utils/logging/ChainLogger.ts:23](https://github.com/patrickkfka
 
 > **end**(): `Promise`\<`void`\>
 
-Defined in: [src/utils/logging/ChainLogger.ts:33](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/logging/ChainLogger.ts#L33)
+Defined in: [src/utils/logging/ChainLogger.ts:33](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/logging/ChainLogger.ts#L33)
 
 #### Returns
 
@@ -86,7 +86,7 @@ Defined in: [src/utils/logging/ChainLogger.ts:33](https://github.com/patrickkfka
 
 > **log**(`entry`): `void`
 
-Defined in: [src/utils/logging/ChainLogger.ts:27](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/logging/ChainLogger.ts#L27)
+Defined in: [src/utils/logging/ChainLogger.ts:27](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/logging/ChainLogger.ts#L27)
 
 #### Parameters
 
@@ -108,7 +108,7 @@ Defined in: [src/utils/logging/ChainLogger.ts:27](https://github.com/patrickkfka
 
 > **remove**(`logger`): `void`
 
-Defined in: [src/utils/logging/ChainLogger.ts:16](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/logging/ChainLogger.ts#L16)
+Defined in: [src/utils/logging/ChainLogger.ts:16](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/logging/ChainLogger.ts#L16)
 
 #### Parameters
 

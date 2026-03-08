@@ -8,7 +8,7 @@
 
 > **DateTimeConstructorArgs** = `object` & \{ `gmt?`: `string`; `hour`: `number`; `minute`: `number`; `second?`: `number`; \} \| \{ `gmt?`: `undefined`; `hour?`: `undefined`; `minute?`: `undefined`; `second?`: `undefined`; \}
 
-Defined in: [src/utils/DateTime.ts:1](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/DateTime.ts#L1)
+Defined in: [src/utils/DateTime.ts:1](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/DateTime.ts#L1)
 
 ## Type declaration
 

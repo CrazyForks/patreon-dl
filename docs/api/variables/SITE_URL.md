@@ -8,4 +8,4 @@
 
 > `const` **SITE\_URL**: `"https://www.patreon.com"` = `'https://www.patreon.com'`
 
-Defined in: [src/utils/URLHelper.ts:5](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/URLHelper.ts#L5)
+Defined in: [src/utils/URLHelper.ts:5](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/URLHelper.ts#L5)

@@ -6,7 +6,7 @@
 
 # Interface: BootstrapData
 
-Defined in: [src/downloaders/Bootstrap.ts:9](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Bootstrap.ts#L9)
+Defined in: [src/downloaders/Bootstrap.ts:9](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/downloaders/Bootstrap.ts#L9)
 
 ## Extended by
 
@@ -19,7 +19,7 @@ Defined in: [src/downloaders/Bootstrap.ts:9](https://github.com/patrickkfkan/pat
 
 > **targetURL**: `string`
 
-Defined in: [src/downloaders/Bootstrap.ts:11](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Bootstrap.ts#L11)
+Defined in: [src/downloaders/Bootstrap.ts:11](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/downloaders/Bootstrap.ts#L11)
 
 ***
 
@@ -27,4 +27,4 @@ Defined in: [src/downloaders/Bootstrap.ts:11](https://github.com/patrickkfkan/pa
 
 > **type**: `string`
 
-Defined in: [src/downloaders/Bootstrap.ts:10](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/downloaders/Bootstrap.ts#L10)
+Defined in: [src/downloaders/Bootstrap.ts:10](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/downloaders/Bootstrap.ts#L10)

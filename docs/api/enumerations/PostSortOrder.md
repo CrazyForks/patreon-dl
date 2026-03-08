@@ -6,7 +6,7 @@
 
 # Enumeration: PostSortOrder
 
-Defined in: [src/utils/URLHelper.ts:264](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/URLHelper.ts#L264)
+Defined in: [src/utils/URLHelper.ts:264](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/URLHelper.ts#L264)
 
 ## Enumeration Members
 
@@ -14,7 +14,7 @@ Defined in: [src/utils/URLHelper.ts:264](https://github.com/patrickkfkan/patreon
 
 > **CollectionOrder**: `"collection_order"`
 
-Defined in: [src/utils/URLHelper.ts:267](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/URLHelper.ts#L267)
+Defined in: [src/utils/URLHelper.ts:267](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/URLHelper.ts#L267)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [src/utils/URLHelper.ts:267](https://github.com/patrickkfkan/patreon
 
 > **PublisedAtDesc**: `"-published_at"`
 
-Defined in: [src/utils/URLHelper.ts:265](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/URLHelper.ts#L265)
+Defined in: [src/utils/URLHelper.ts:265](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/URLHelper.ts#L265)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [src/utils/URLHelper.ts:265](https://github.com/patrickkfkan/patreon
 
 > **PublishedAtAsc**: `"published_at"`
 
-Defined in: [src/utils/URLHelper.ts:266](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/utils/URLHelper.ts#L266)
+Defined in: [src/utils/URLHelper.ts:266](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/utils/URLHelper.ts#L266)

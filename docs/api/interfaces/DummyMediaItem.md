@@ -6,7 +6,7 @@
 
 # Interface: DummyMediaItem
 
-Defined in: [src/entities/MediaItem.ts:136](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/MediaItem.ts#L136)
+Defined in: [src/entities/MediaItem.ts:136](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/MediaItem.ts#L136)
 
 Minimal `MediaItem` typically used to represent media-type properties of elements, such
 as video thumbnails and campaign avatar / cover photos.
@@ -23,7 +23,7 @@ As a `MediaItem` type, and hence also a `Downloadable` type, it can be used to c
 
 > **filename**: `null` \| `string`
 
-Defined in: [src/entities/MediaItem.ts:4](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/MediaItem.ts#L4)
+Defined in: [src/entities/MediaItem.ts:4](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/MediaItem.ts#L4)
 
 #### Inherited from
 
@@ -35,7 +35,7 @@ Defined in: [src/entities/MediaItem.ts:4](https://github.com/patrickkfkan/patreo
 
 > **id**: `string`
 
-Defined in: [src/entities/MediaItem.ts:3](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/MediaItem.ts#L3)
+Defined in: [src/entities/MediaItem.ts:3](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/MediaItem.ts#L3)
 
 #### Inherited from
 
@@ -47,7 +47,7 @@ Defined in: [src/entities/MediaItem.ts:3](https://github.com/patrickkfkan/patreo
 
 > **mimeType**: `null` \| `string`
 
-Defined in: [src/entities/MediaItem.ts:5](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/MediaItem.ts#L5)
+Defined in: [src/entities/MediaItem.ts:5](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/MediaItem.ts#L5)
 
 #### Inherited from
 
@@ -59,7 +59,7 @@ Defined in: [src/entities/MediaItem.ts:5](https://github.com/patrickkfkan/patreo
 
 > **srcURLs**: `Record`\<`string`, `string` \| `null`\>
 
-Defined in: [src/entities/MediaItem.ts:139](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/MediaItem.ts#L139)
+Defined in: [src/entities/MediaItem.ts:139](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/MediaItem.ts#L139)
 
 ***
 
@@ -67,7 +67,7 @@ Defined in: [src/entities/MediaItem.ts:139](https://github.com/patrickkfkan/patr
 
 > **type**: `"dummy"`
 
-Defined in: [src/entities/MediaItem.ts:137](https://github.com/patrickkfkan/patreon-dl/blob/85b45f808a4c4af13ab0b40464fd970e53880f7d/src/entities/MediaItem.ts#L137)
+Defined in: [src/entities/MediaItem.ts:137](https://github.com/patrickkfkan/patreon-dl/blob/f4934f843afb682fff78767f9badb2782e7b594e/src/entities/MediaItem.ts#L137)
 
 #### Overrides
 
