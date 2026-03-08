@@ -174,6 +174,7 @@ function getCLIIncludeOptions(commandLineOptions: CommandLineParseResult, config
     contentInfo: CLIOptionValidator.validateBoolean(pickDefined(commandLineOptions.include?.contentInfo, configFileOptions?.include?.contentInfo)),
     previewMedia: CLIOptionValidator.validateIncludePreviewMedia(pickDefined(commandLineOptions.include?.previewMedia, configFileOptions?.include?.previewMedia)),
     contentMedia: CLIOptionValidator.validateIncludeContentMedia(pickDefined(commandLineOptions.include?.contentMedia, configFileOptions?.include?.contentMedia)),
+    protectedMedia: CLIOptionValidator.validateBoolean(pickDefined(commandLineOptions.include?.protectedMedia, configFileOptions?.include?.protectedMedia)),
     allMediaVariants: CLIOptionValidator.validateBoolean(pickDefined(commandLineOptions.include?.allMediaVariants, configFileOptions?.include?.allMediaVariants)),
     mediaThumbnails: CLIOptionValidator.validateBoolean(pickDefined(commandLineOptions.include?.mediaThumbnails, configFileOptions?.include?.mediaThumbnails)),
     mediaByFilename: {
@@ -218,6 +219,7 @@ function readTargetsFile(file: string) {
     contentInfo: 'include.content.info',
     previewMedia: 'include.preview.media',
     contentMedia: 'include.content.media',
+    protectedMedia: 'nclude.protected.media',
     allMediaVariants: 'include.all.media.variants',
     mediaThumbnails: 'include.media.thumbnails',
     imagesByFilename: 'include.images.by.filename',

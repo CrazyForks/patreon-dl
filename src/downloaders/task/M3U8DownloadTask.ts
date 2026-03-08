@@ -2,10 +2,23 @@ import { type VideoMediaItem } from '../../entities/MediaItem.js';
 import { SITE_URL } from '../../utils/URLHelper.js';
 import FFmpegDownloadTaskBase, { type FFmpegCommandParams, type FFmpegDownloadTaskBaseParams } from './FFmpegDownloadTaskBase.js';
 import semver from 'semver';
-import m3u8Parser from 'm3u8-parser';
+import m3u8Parser, { PlaylistItem } from 'm3u8-parser';
 import type Fetcher from '../../utils/Fetcher.js';
 import FSHelper from '../../utils/FSHelper.js';
 import path from 'path';
+
+interface Variant extends PlaylistItem {
+  protected?: boolean;
+}
+
+type PickVariantResult = {
+  src: null;
+  reason: string;
+} | {
+  src: string;
+  resolution: string | null,
+  protected?: boolean;
+};
 
 export interface M3U8DownloadTaskParams extends FFmpegDownloadTaskBaseParams<VideoMediaItem> {
   fetcher: Fetcher;
@@ -20,6 +33,9 @@ export default class M3U8DownloadTask extends FFmpegDownloadTaskBase<VideoMediaI
 
   name = 'M3U8DownloadTask';
 
+  #skipOnStart: {
+    reason: string;
+  } | null;
   #fetcher: Fetcher;
   #unresolvedDestFilePath: string;
   #ffmpegCommandParams: M3U8FFmpegCommandParams | null;
@@ -29,6 +45,17 @@ export default class M3U8DownloadTask extends FFmpegDownloadTaskBase<VideoMediaI
     this.#fetcher = params.fetcher;
     this.#unresolvedDestFilePath = params.destFilePath;
     this.#ffmpegCommandParams = null;
+    this.#skipOnStart = null;
+  }
+
+  async start() {
+    if (this.#skipOnStart) {
+      return this.notifySkip({
+        name: 'other',
+        message: this.#skipOnStart.reason,
+      });
+    }
+    return await super.start();
   }
 
   protected async resolveDestPath(signal?: AbortSignal) {
@@ -40,7 +67,14 @@ export default class M3U8DownloadTask extends FFmpegDownloadTaskBase<VideoMediaI
     if (this.#ffmpegCommandParams) {
       return this.#ffmpegCommandParams;
     }
+
     const input = await this.#pickVariant(signal);
+    if (input.src === null) {
+      this.#skipOnStart = {
+        reason: `No downloadable source - ${input.reason}`
+      };
+    }
+
     const inputOptions = [
       '-protocol_whitelist',
       'http,https,tcp,tls',
@@ -52,23 +86,38 @@ export default class M3U8DownloadTask extends FFmpegDownloadTaskBase<VideoMediaI
       inputOptions.push('-extension_picky', '0');
     }
     let output = this.#unresolvedDestFilePath;
-    if (this.config.maxVideoResolution && this.config.maxVideoResolution > 0) {
-      if (input.resolution) {
-        this.log('info', `Video found with resolution at or below specified max resolution "${this.config.maxVideoResolution}": ${input.resolution}`);
-        const { name: filename, ext, dir } = path.parse(this.#unresolvedDestFilePath);
-        output = path.resolve(dir, FSHelper.sanitizeFilename(`${filename} (${input.resolution})${ext}`));
+    if (input.src) {
+      if (input.protected || input.resolution) {
+        let { name: filename, ext, dir } = path.parse(this.#unresolvedDestFilePath);
+        if (input.resolution) {
+          filename += ` (${input.resolution})`;
+        }
+        if (input.protected) {
+          filename += ' drm';
+        }
+        output = path.resolve(dir, FSHelper.sanitizeFilename(`${filename}${ext}`));
       }
-      else {
-        this.log('info', `No video found with resolution at or below specified max resolution "${this.config.maxVideoResolution}" - going to download highest`);
-      }
+
+      const criteria = JSON.stringify({
+        'max video resolution': this.config.maxVideoResolution || undefined,
+        'include protected media':  this.config.include.protectedMedia ? 'yes' : undefined
+      });
+      const criteriaStr  = criteria === '{}' ? '' : ` matching criteria ${JSON.stringify(criteria)}`;
+      const streamInfoParts = [
+        input.resolution || 'unknown resolution',
+        input.protected === true ? 'protected'
+          : input.protected === false ? ''
+          : 'unknown'
+      ];
+      this.log('info', `Target stream${criteriaStr}:`, streamInfoParts.join(';'));
     }
 
     this.#ffmpegCommandParams = {
       inputs: [
         {
-          input: input.src,
+          input: input.src || this.src,
           options: inputOptions,
-          resolution: input.resolution
+          resolution: input.src ? input.resolution : null
         }
       ],
       output
@@ -81,20 +130,10 @@ export default class M3U8DownloadTask extends FFmpegDownloadTaskBase<VideoMediaI
     return this.srcEntity.duration;
   }
 
-  async #pickVariant(signal?: AbortSignal) {
-    const maxResolution = this.config.maxVideoResolution;
-    if (!maxResolution || maxResolution < 0) {
-      return {
-        src: this.src,
-        resolution: null
-      };
-    }
-
-    this.log('debug', `Apply maxVideoResolution "${maxResolution}"`);
-
-    const { html: m3u8 } = await this.#fetcher.get({
+  async #pickVariant(signal?: AbortSignal): Promise<PickVariantResult> {
+    const { contents: m3u8 } = await this.#fetcher.get({
       url: this.src,
-      type: 'html',
+      type: 'm3u8',
       maxRetries: this.config.request.maxRetries,
       signal
     });
@@ -102,18 +141,64 @@ export default class M3U8DownloadTask extends FFmpegDownloadTaskBase<VideoMediaI
     parser.push(m3u8);
     parser.end();
 
-    const variants = parser.manifest.playlists;
-
-    this.log('debug', `m3u8 has ${variants?.length ?? 0} variants (src: ${this.src})`);
-    
-    if (!variants) {
-      this.log('debug', `No videos found in m3u8 manifest - going to download video with highest resolution`);
+    if (!parser.manifest.playlists || parser.manifest.playlists.length === 0) {
+      this.log('warn', `No stream found in m3u8 manifest - going to download without stream selection`);
       return {
         src: this.src,
-        resolution: null
+        resolution: 'best quality',
+        protected: undefined
       };
     }
+
+    const orderedPlaylistItems = parser.manifest.playlists
+      .sort((a, b) => {
+        // 1. Get heights or 0
+        const heightA = a.attributes.RESOLUTION?.height || 0;
+        const heightB = b.attributes.RESOLUTION?.height || 0;
+
+        // 2. If heights are different, sort by height
+        if (heightB !== heightA) {
+          return heightB - heightA;
+        }
+
+        // 3. If heights are the same (or both 0), sort by BANDWIDTH
+        const bandwidthA = a.attributes.BANDWIDTH || 0;
+        const bandwidthB = b.attributes.BANDWIDTH || 0;
+
+        return bandwidthB - bandwidthA;
+      });
+    let variants = await this.#getProtectionStatus(orderedPlaylistItems, signal);
     
+    if (variants.every((v) => v.protected === false) && !this.config.maxVideoResolution) {
+      return {
+        src: this.src,
+        resolution: 'best quality',
+        protected: false
+      };
+    }
+
+    this.log('debug', `m3u8 has ${variants?.length ?? 0} variants (src: ${this.src})`);
+  
+    // include.protectedMedia
+    if (!this.config.include.protectedMedia) {
+      const prevLength = variants.length;
+      variants = variants.filter((v) => !v.protected)
+      if (variants.length === 0) {
+        this.log('debug', 'All streams are protected');
+        return {
+          src: null,
+          reason: 'Media is protected'
+        };
+      }
+      else {
+        this.log('debug', `${(prevLength - variants.length) / prevLength} streams are protected`)
+      }
+    }
+
+    // maxVideoResolution
+    const maxResolution = this.config.maxVideoResolution;
+    const hasMaxResolutionConfigured = maxResolution && maxResolution > 0;
+   
     const __hasAudio = (variant: typeof variants[number]) => {
       const codecs = variant.attributes.CODECS || "";
       return codecs.includes("mp4a"); // crude check for AAC audio
@@ -121,25 +206,64 @@ export default class M3U8DownloadTask extends FFmpegDownloadTaskBase<VideoMediaI
 
     const allWithoutAudio = variants.every((v) => !__hasAudio(v));
 
-    const filtered = variants
-      .filter((v) => (v.attributes.RESOLUTION && v.attributes.RESOLUTION.height <= maxResolution) && (allWithoutAudio || __hasAudio(v)))
-      .sort((a, b) => b.attributes.RESOLUTION!.height - a.attributes.RESOLUTION!.height);
-
-    if (filtered.length === 0) {
-      this.log('debug', `No video found in m3u8 manifest at or below resolution "${maxResolution}" - going to download video with highest resolution`);
-      return {
-        src: this.src,
-        resolution: null
-      };
+    let selected;
+    if (hasMaxResolutionConfigured) {
+      this.log('debug', `Apply maxVideoResolution "${maxResolution}"`);
+      const maxResCandidates = variants
+        .filter((v) => (v.attributes.RESOLUTION && v.attributes.RESOLUTION.height <= maxResolution) && (allWithoutAudio || __hasAudio(v)));
+      if (maxResCandidates.length === 0 ) {
+        this.log('debug', `No stream in m3u8 manifest has resolution "${maxResolution}" or lower - maxVideoResolution not applied`);
+      }
+      else {
+        variants = maxResCandidates;
+      }
     }
 
-    const selected = filtered[0];
-
-    this.log('debug', `Video at or below resolution "${maxResolution}": ${selected.uri} (${JSON.stringify(selected.attributes.RESOLUTION)})`);
+    selected = variants[0];
 
     return {
       src: new URL(selected.uri, this.src).href,
-      resolution: `${selected.attributes.RESOLUTION!.width}x${selected.attributes.RESOLUTION!.height}`
+      resolution: this.#getResolutionString(selected),
+      protected: selected.protected
     };
+  }
+
+  async #getProtectionStatus(variants: PlaylistItem[], signal?: AbortSignal): Promise<Variant[]> {
+    return await Promise.all(variants.map((variant) =>
+      this.#fetcher.get({
+        url: variant.uri,
+        type: 'm3u8',
+        maxRetries: this.config.request.maxRetries,
+        signal
+      })
+      .then(({contents: m3u8}) => {
+        const parser = new m3u8Parser.Parser();
+        parser.push(m3u8);
+        parser.end();
+        const protectionData = parser.manifest.contentProtection;
+        const _protected = !!(protectionData && typeof protectionData === 'object' && Object.entries(protectionData).length > 0);
+        return {
+          ...variant,
+          protected: _protected
+        };
+      })
+      .catch((error: unknown) => {
+        if (signal?.aborted) {
+          throw error;
+        }
+        this.log('warn', `Could not determine if stream (${this.#getResolutionString(variant)}) is protected:`, error);
+        return {
+          ...variant,
+          protected: undefined
+        };
+      })
+    ));
+  }
+
+  #getResolutionString(item: PlaylistItem) {
+    if (item.attributes.RESOLUTION?.width && item.attributes.RESOLUTION?.height) {
+      return `${item.attributes.RESOLUTION.width}x${item.attributes.RESOLUTION.height}`;
+    }
+    return null;
   }
 }

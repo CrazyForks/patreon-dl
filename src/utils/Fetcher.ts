@@ -43,9 +43,10 @@ export class FetcherError extends Error {
   }
 }
 
-export type FetcherGetType = 'html' | 'json';
+export type FetcherGetType = 'html' | 'm3u8' | 'json';
 export type FetcherGetResultOf<T extends FetcherGetType> =
   T extends 'html' ? { html: string; lastUrl: string; }:
+  T extends 'm3u8' ? { contents: string; lastUrl: string; }:
   T extends 'json' ? { json: any; lastUrl: string; } :
   never;
 
@@ -86,7 +87,7 @@ export default class Fetcher {
       }
     }
     const request = new Request(urlObj, { method: 'GET' });
-    this.#setHeaders(request, type);
+    this.#setHeaders(request, type, type === 'm3u8' ? { setReferer: true } : {});
     const internalAbortController = new AbortController();
     let removeAbortHandler: undefined | (() => void) = undefined;
     if (signal) {
@@ -101,6 +102,11 @@ export default class Fetcher {
         case 'html':
           return {
             html: await res.text(),
+            lastUrl
+          } as FetcherGetResultOf<T>;
+        case 'm3u8':
+          return {
+            contents: await res.text(),
             lastUrl
           } as FetcherGetResultOf<T>;
         case 'json':
@@ -304,7 +310,7 @@ export default class Fetcher {
     }
   }
 
-  #setHeaders(request: Request, type: 'html' | 'json', opts?: { setCookie?: boolean; setHost?: boolean; setReferer?: boolean; }) {
+  #setHeaders(request: Request, type: FetcherGetType, opts?: { setCookie?: boolean; setHost?: boolean; setReferer?: boolean; }) {
     const setCookie = pickDefined(opts?.setCookie, true);
     const setHost = pickDefined(opts?.setHost, true);
     const setReferer = pickDefined(opts?.setReferer, false);

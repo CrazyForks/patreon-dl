@@ -36,6 +36,7 @@ const CONFIG_FILE_PROPS = {
     campaignInfo: 'include:campaign.info',
     contentInfo: 'include:content.info',
     previewMedia: 'include:preview.media',
+    protectedMedia: 'include:protected.media',
     contentMedia: 'include:content.media',
     allMediaVariants: 'include:all.media.variants',
     mediaThumbnails: 'include:media.thumbnails',
@@ -133,6 +134,7 @@ export default class ConfigFileParser {
         contentInfo: __getValue(CONFIG_FILE_PROPS.include.contentInfo),
         previewMedia: __getValue(CONFIG_FILE_PROPS.include.previewMedia),
         contentMedia: __getValue(CONFIG_FILE_PROPS.include.contentMedia),
+        protectedMedia: __getValue(CONFIG_FILE_PROPS.include.protectedMedia),
         allMediaVariants: __getValue(CONFIG_FILE_PROPS.include.allMediaVariants),
         mediaThumbnails: __getValue(CONFIG_FILE_PROPS.include.mediaThumbnails),
         mediaByFilename: {
