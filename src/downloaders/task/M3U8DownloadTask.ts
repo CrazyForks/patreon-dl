@@ -2,7 +2,7 @@ import { type VideoMediaItem } from '../../entities/MediaItem.js';
 import { SITE_URL } from '../../utils/URLHelper.js';
 import FFmpegDownloadTaskBase, { type FFmpegCommandParams, type FFmpegDownloadTaskBaseParams } from './FFmpegDownloadTaskBase.js';
 import semver from 'semver';
-import m3u8Parser, { PlaylistItem } from 'm3u8-parser';
+import m3u8Parser, { type PlaylistItem } from 'm3u8-parser';
 import type Fetcher from '../../utils/Fetcher.js';
 import FSHelper from '../../utils/FSHelper.js';
 import path from 'path';
@@ -88,7 +88,9 @@ export default class M3U8DownloadTask extends FFmpegDownloadTaskBase<VideoMediaI
     let output = this.#unresolvedDestFilePath;
     if (input.src) {
       if (input.protected || input.resolution) {
-        let { name: filename, ext, dir } = path.parse(this.#unresolvedDestFilePath);
+        const parsedFilePath = path.parse(this.#unresolvedDestFilePath);
+        const { ext, dir } = parsedFilePath;
+        let filename = parsedFilePath.name;
         if (input.resolution) {
           filename += ` (${input.resolution})`;
         }
@@ -206,7 +208,6 @@ export default class M3U8DownloadTask extends FFmpegDownloadTaskBase<VideoMediaI
 
     const allWithoutAudio = variants.every((v) => !__hasAudio(v));
 
-    let selected;
     if (hasMaxResolutionConfigured) {
       this.log('debug', `Apply maxVideoResolution "${maxResolution}"`);
       const maxResCandidates = variants
@@ -219,7 +220,7 @@ export default class M3U8DownloadTask extends FFmpegDownloadTaskBase<VideoMediaI
       }
     }
 
-    selected = variants[0];
+    const selected = variants[0];
 
     return {
       src: new URL(selected.uri, this.src).href,
