@@ -58,7 +58,7 @@ export default class PageParser extends Parser {
         }
       }
 
-      const campaignIdRegex = /campaign_id\\",\\"unit_id\\":\\"(.+?)\\"/gm;
+      const campaignIdRegex = /{\\"self\\":\\"https:\/\/www\.patreon\.com\/api\/campaigns\/(.+?)\\"}/gm;
       this.log('debug', `Trying pattern in Next.js streaming response: ${campaignIdRegex}`);
       const campaignIdMatch = campaignIdRegex.exec(html);
       if (!campaignIdMatch || !campaignIdMatch[1]) {
