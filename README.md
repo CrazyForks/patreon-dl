@@ -11,7 +11,7 @@ This repo contains the `patreon-dl` library and its command-line tool. For GUI a
 - Download posts by user, in a collection or single post.
 - Download products (aka shop purchases)
 - Items included in downloads:
-    - videos
+    - videos - but see [limitations](#limitations) on Patreon-hosted videos
     - images
     - audio
     - attachments
@@ -26,11 +26,22 @@ You can run `patreon-dl` from the command-line or [use it as a library](./docs/L
 
 ### Limitations
 
+**Embedded videos / links**
+
 - Embedded links are not followed; only info about the embed is saved. Exception:
   - YouTube video link - in which case the video is downloaded; or
   - An external downloader is configured for the link provider.
 
 For information on external downloaders, see the [Embedded videos / links - external downloader](#embedded-videos--links---external-downloader) section. Example config is provided for fetching YouTube (replacing the built-in downloader) and Vimeo videos.
+
+**Patreon-hosted videos with DRM protection**
+
+Some videos served by Patreon are now protected with DRM. Because these videos require a real-time decryption key available only during authorized streaming, they cannot be played back normally after being downloaded.
+
+By default, `patreon-dl` will skip DRM-protected content to avoid broken downloads. If you still wish to download these files, you can force the download using:
+
+- CLI: Use the `protected.media` option (see [example.conf](./example.conf)).
+- Library: Use the `include.protectedMedia` option (see [documentation](./docs/Library.md)).
 
 ### FFmpeg dependency
 
@@ -203,6 +214,7 @@ include.posts.in.tier = 123456, 789100
 # include.content.info
 # include.preview.media
 # include.content.media
+# include.protected.media
 # include.all.media.variants
 # include.images.by.filename
 # include.audio.by.filename
@@ -292,6 +304,10 @@ Note the URL shown in the output. Open this URL in a web browser to begin viewin
 > Keep in mind that the web server is in no way secure. It is meant for local browsing and should not be exposed to outside parties!
 
 ## Changelog
+
+3.7.1
+- Check and skip download of Patreon-hosted videos that are protected by DRM; add `include.protectedMedia` / `protected.media` option.
+- Fix campaign not found when targeting collections ([#124](https://github.com/patrickkfkan/patreon-dl/issues/124)).
 
 v3.7.0
 - Vimeo download script: fetch full player URL ([#118](https://github.com/patrickkfkan/patreon-dl/issues/118))
