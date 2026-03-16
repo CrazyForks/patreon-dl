@@ -570,14 +570,12 @@ export default class URLHelper {
     }
 
     // Fallback: treat valid HTTPS URLs with non-patreon.com hostnames as custom Patreon domains
-    if (this.validateURL(base)) {
-      const urlObj = new URL(base);
-      if (urlObj.protocol === 'https:' && !urlObj.hostname.endsWith('patreon.com')) {
-        return {
-          type: 'customURL',
-          url: base
-        };
-      }
+    // Note: `base` is already a valid URL (came from stripSearchParamsFromURL), no need to re-validate
+    if (!this.isPatreonURL(base)) {
+      return {
+        type: 'customURL',
+        url: base
+      };
     }
 
     return null;
@@ -595,6 +593,16 @@ export default class URLHelper {
   static getExtensionFromURL(url: string) {
     const urlObj = new URL(url);
     return path.extname(urlObj.pathname.split('/').pop() || '');
+  }
+
+  static isPatreonURL(url: string) {
+    try {
+      const { protocol, hostname } = new URL(url);
+      return protocol === 'https:' && (hostname === 'www.patreon.com' || hostname === 'patreon.com');
+    }
+    catch {
+      return false;
+    }
   }
 
   static validateURL(url: any) {

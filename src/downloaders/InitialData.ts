@@ -45,7 +45,7 @@ export class InitialData {
         // For custom domains (non-patreon.com), skip the cookie-bearing fetch —
         // sending patreon session cookies to a third-party domain can invalidate
         // the session. Use Puppeteer directly instead.
-        const isCustomDomain = !new URL(url).hostname.endsWith('patreon.com');
+        const isCustomDomain = !URLHelper.isPatreonURL(url);
         if (isCustomDomain) {
           this.log('debug', `Custom domain detected - using Puppeteer to avoid sending cookies to third-party domain`);
           page = await this.#fetchPageWithPuppeteer(url);

@@ -63,7 +63,7 @@ export default class PageParser extends Parser {
       let campaignIdMatch = campaignIdRegex.exec(html);
 
       if (!campaignIdMatch || !campaignIdMatch[1]) {
-        const campaignIdRegexSimple = /\\?\/api\/campaigns\/(\d+)/gm;
+        const campaignIdRegexSimple = /{\\"self\\":\\"https:\/\/[^"]+\/api\/campaigns\/(.+?)\\"}/gm;
         this.log('debug', `Trying fallback pattern: ${campaignIdRegexSimple}`);
         campaignIdMatch = campaignIdRegexSimple.exec(html);
       }
