@@ -290,6 +290,9 @@ export type URLAnalysis = {
 } | {
   type: 'shop';
   vanity: string;
+} | {
+  type: 'customURL';
+  url: string;
 }
 
 export default class URLHelper {
@@ -564,6 +567,17 @@ export default class URLHelper {
         type: 'shop',
         vanity:shopURLMatchVanity
       };
+    }
+
+    // Fallback: treat valid HTTPS URLs with non-patreon.com hostnames as custom Patreon domains
+    if (this.validateURL(base)) {
+      const urlObj = new URL(base);
+      if (urlObj.protocol === 'https:' && !urlObj.hostname.endsWith('patreon.com')) {
+        return {
+          type: 'customURL',
+          url: base
+        };
+      }
     }
 
     return null;

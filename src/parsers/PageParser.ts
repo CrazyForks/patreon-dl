@@ -60,9 +60,16 @@ export default class PageParser extends Parser {
 
       const campaignIdRegex = /{\\"self\\":\\"https:\/\/www\.patreon\.com\/api\/campaigns\/(.+?)\\"}/gm;
       this.log('debug', `Trying pattern in Next.js streaming response: ${campaignIdRegex}`);
-      const campaignIdMatch = campaignIdRegex.exec(html);
+      let campaignIdMatch = campaignIdRegex.exec(html);
+
       if (!campaignIdMatch || !campaignIdMatch[1]) {
-        throw Error(`Initial data not found - no match for pattern in Next.js streaming response: ${campaignIdRegex}`);
+        const campaignIdRegexSimple = /\\?\/api\/campaigns\/(\d+)/gm;
+        this.log('debug', `Trying fallback pattern: ${campaignIdRegexSimple}`);
+        campaignIdMatch = campaignIdRegexSimple.exec(html);
+      }
+
+      if (!campaignIdMatch || !campaignIdMatch[1]) {
+        throw Error(`Initial data not found - campaign ID not found in Next.js streaming response`);
       }
 
       const campaignId = campaignIdMatch ? campaignIdMatch[1] : undefined;

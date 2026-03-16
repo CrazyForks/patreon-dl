@@ -42,14 +42,28 @@ export class InitialData {
       this.log('debug', `Fetch initial data from "${url}"`);
       let page;
       try {
-        const { html, lastUrl } = await this.fetcher.get({ url, type: 'html', maxRetries: this.config.request.maxRetries, signal });
-        page = html;
-        if (new URL(lastUrl).pathname === '/login-sync-domains') {
-          this.log('debug', `Detected Cloudflare challenge flow at "${lastUrl}"`);
+        // For custom domains (non-patreon.com), skip the cookie-bearing fetch —
+        // sending patreon session cookies to a third-party domain can invalidate
+        // the session. Use Puppeteer directly instead.
+        const isCustomDomain = !new URL(url).hostname.endsWith('patreon.com');
+        if (isCustomDomain) {
+          this.log('debug', `Custom domain detected - using Puppeteer to avoid sending cookies to third-party domain`);
           page = await this.#fetchPageWithPuppeteer(url);
-          // Because cookie not available to Puppeteer, we need to fetch 
-          // current user ID separately
           fetchCurrentUserIdFromAPI = !!this.config.cookie;
+        }
+        else {
+          const { html, lastUrl } = await this.fetcher.get({ url, type: 'html', maxRetries: this.config.request.maxRetries, signal });
+          page = html;
+          const isCloudflareChallenge = new URL(lastUrl).pathname === '/login-sync-domains' ||
+            html.includes('window._cf_chl_opt') ||
+            html.includes('challenge-platform');
+          if (isCloudflareChallenge) {
+            this.log('debug', `Detected Cloudflare challenge flow - using Puppeteer`);
+            page = await this.#fetchPageWithPuppeteer(url);
+            // Because cookie not available to Puppeteer, we need to fetch
+            // current user ID separately
+            fetchCurrentUserIdFromAPI = !!this.config.cookie;
+          }
         }
       }
       catch (error) {
