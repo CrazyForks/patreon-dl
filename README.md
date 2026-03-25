@@ -150,6 +150,10 @@ https://www.patreon.com/collection/<collection_id>
 
 ```
 
+#### Custom URLs
+
+Some creators host their Patreon pages on custom domains. You can provide this custom URL to `patreon-dl`, which will download posts from the associated creator.
+
 #### Multiple URLs
 
 You may specify multiple URLs by separating them with a comma. E.g.:
