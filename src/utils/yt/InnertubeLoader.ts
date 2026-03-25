@@ -1,6 +1,7 @@
 import Innertube, { Platform } from 'youtubei.js';
 import type * as InnertubeLib from 'youtubei.js';
 import fse from 'fs-extra';
+import tmp from 'tmp';
 import { type Dispatcher } from 'undici';
 import type Logger from '../logging/Logger.js';
 import { commonLog, type LogLevel } from '../logging/Logger.js';
@@ -33,15 +34,15 @@ Platform.shim.eval = (data: InnertubeLib.Types.BuildScriptResult, env: Record<st
     properties.push(`sig: exportedVars.sigFunction("${env.sig}")`)
   }
 
-  const code = `${data.output}\nreturn { ${properties.join(', ')} }`;
-
-  return InnertubeLoader.eval(code);
+  return InnertubeLoader.eval(data.output);
 };
 
 /**
  * Creates an Innertube instance for fetching YouTube video info.
  * 
- * The current implementation fetches videos with the "TV" client.
+ * The current implementation fetches videos with:
+ * 1. "TV" client - if logged in;
+ * 2. Otherwise, "ANDROID_VR" client
  * With this client, YouTube requires login most of the time.
  * It's unclear if this is transitioning into a global requirement or if
  * the IP address has just been flagged.
@@ -51,11 +52,7 @@ Platform.shim.eval = (data: InnertubeLib.Types.BuildScriptResult, env: Record<st
  * - WEB_EMBEDDED: "Video is unavailable" error
  * - ANDROID: "Precondition check failed" error
  * - MWEB: stream url returns 403 error even with PO token set -- maybe I'm doing it wrongly
- * 
- * yt-dlp uses android_vr client, which is not yet available in Innertube, and does not
- * require login. From a maintenance and practicality perspective, yt-dlp is
- * the tool of choice going forward that will eventually replace the built-in YT downloader.
- */
+  */
 export default class InnertubeLoader {
 
   static #name = 'InnertubeLoader';
@@ -112,9 +109,6 @@ export default class InnertubeLoader {
     const minter = PoTokenMinter.createInstance({ proxyAgent: this.#proxy });
     const sessionPot = USE_PO_TOKEN ? await this.#generateSessionPot(minter) : undefined;
     const innertube = await Innertube.create({
-      // Force specific player_id previously known to work to circumvent n/sig decipher
-      // function extraction error. This is just a temporary fix.
-      player_id: '9f4cc5e4',
       po_token: sessionPot,
       fetch: (input, init) => Platform.shim.fetch(input, { ...init, dispatcher: this.#proxy } as any)
     });
@@ -152,7 +146,6 @@ export default class InnertubeLoader {
 
   static async #generateSessionPot(minter: POTokenMinterWrapper) {
     const innertube = await Innertube.create({
-      player_id: '9f4cc5e4',
       fetch: (input, init) => Platform.shim.fetch(input, { ...init, dispatcher: this.#proxy } as any)
     });
     const visitorData = innertube.session.context.client.visitorData;
@@ -182,7 +175,9 @@ export default class InnertubeLoader {
             pot = undefined;
           }
         }
-        const info = await innertube.getBasicInfo(videoId, { client: 'TV', po_token: pot });
+        const client = signedIn ? 'TV' : 'ANDROID_VR';
+        this.log('debug', `Selected client: ${client}`);
+        const info = await innertube.getBasicInfo(videoId, { client, po_token: pot });
         return info;
       },
       dispose: () => {
@@ -230,7 +225,11 @@ export default class InnertubeLoader {
           }));
         }
       `;
-      const denoProcess = spawn(this.#pathToDeno || 'deno', ['eval', wrappedCode]);
+      tmp.setGracefulCleanup();
+      const tmpobj = tmp.fileSync();
+      fse.writeFileSync(tmpobj.fd, wrappedCode);
+      this.log('debug', `deno run --allow-read "${tmpobj.name}"`);
+      const denoProcess = spawn(this.#pathToDeno || 'deno', ['run', '--allow-read', tmpobj.name]);
       let output = '';
 
       denoProcess.stdout.on('data', (data: Buffer) => {

@@ -24,7 +24,7 @@ export default class YouTubeCredentialsCapturer extends EventEmitter {
   }
 
   async begin() {
-    const innertube = await Innertube.create({ player_id: '9f4cc5e4' });
+    const innertube = await Innertube.create();
     innertube.session.on('auth-pending', this.#innertubeAuthListeners.authPending);
     innertube.session.on('auth', this.#innertubeAuthListeners.auth);
     void innertube.session.signIn();

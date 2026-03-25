@@ -4,6 +4,9 @@ import dateFormat from 'dateformat';
 import Logger, { type LogEntry, type LogLevel } from '../../utils/logging/Logger.js';
 import { type DeepRequired, pickDefined } from '../../utils/Misc.js';
 import { FetcherError } from '../Fetcher.js';
+import { Utils as InnertubeUtils } from 'youtubei.js';
+
+const InnertubeError = InnertubeUtils.InnertubeError;
 
 const LOG_LEVEL_ORDER = [
   'error',
@@ -117,6 +120,9 @@ export default class ConsoleLogger extends Logger {
     }
     else if (m.cause) {
       result.push(m.cause as string);
+    }
+    if (m instanceof InnertubeError && m.info) {
+      result.push(String(m.info));
     }
     if (m instanceof FetcherError) {
       result.push(`(${m.method}: ${m.url})`);

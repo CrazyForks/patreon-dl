@@ -408,9 +408,7 @@ export default class YouTubeDownloadTask extends FFmpegDownloadTaskBase<YouTubeP
 
   async #resolveURL(url: string): Promise<string> {
     if (!YouTubeDownloadTask.#innertubeForResolveURL) {
-      YouTubeDownloadTask.#innertubeForResolveURL = await InnertubeLib.Innertube.create({
-        player_id: '9f4cc5e4'
-      });
+      YouTubeDownloadTask.#innertubeForResolveURL = await InnertubeLib.Innertube.create();
     }
     const innertube = YouTubeDownloadTask.#innertubeForResolveURL;
     const endpoint = await innertube.resolveURL(url);
