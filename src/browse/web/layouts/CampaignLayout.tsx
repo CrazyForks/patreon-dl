@@ -4,6 +4,7 @@ import { useAPI } from "../contexts/APIProvider";
 import { useEffect, useState } from "react";
 import CampaignHeader from "../components/CampaignHeader";
 import { type CampaignWithCounts } from "../../types/Campaign";
+import { useDocument } from "../contexts/DocumentProvider";
 
 function CampaignLayout() {
   const { id: campaignId } = useParams();
@@ -12,6 +13,7 @@ function CampaignLayout() {
     return null;
   }
   const { api } = useAPI();
+  const { setTitle } = useDocument();
   const [campaign, setCampaign] = useState<CampaignWithCounts | null>(null);
 
   useEffect(() => {
@@ -25,6 +27,10 @@ function CampaignLayout() {
 
     return () => abortController.abort();
   }, [api, campaignId]);
+
+  useEffect(() => {
+    setTitle(campaign?.name || null);
+  }, [setTitle, campaign]);
 
   if (!campaign) {
     return null;

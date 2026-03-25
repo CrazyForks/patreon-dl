@@ -11,6 +11,7 @@ import { type UnionToTuple } from "../../../utils/Misc";
 import { useScroll } from "../contexts/MainContentScrollProvider";
 import { useBrowseSettings } from "../contexts/BrowseSettingsProvider";
 import { type BrowseSettings } from "../../types/Settings";
+import { useDocument } from "../contexts/DocumentProvider";
 
 interface PostNav {
   previous: PostWithComments | null;
@@ -64,6 +65,7 @@ const ContentColumn = forwardRef<
 function PostContent() {
   const {id: postId} = useParams();
   const { api } = useAPI();
+  const { setTitle } = useDocument();
   const { settings } = useBrowseSettings();
   const { scrollTo } = useScroll();
   const [post, setContent] = useReducer(contentReducer, null);;
@@ -88,6 +90,10 @@ function PostContent() {
 
     return () => abortController.abort();
   }, [api, postId]);
+
+  useEffect(() => {
+    setTitle(post?.title || null);
+  }, [setTitle, post]);
 
   const updateNavStickiness = useCallback(() => {
     if (!postNav.previous && !postNav.next) {

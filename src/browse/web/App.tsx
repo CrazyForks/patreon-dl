@@ -16,6 +16,7 @@ import CampaignMedia from "./pages/CampaignMedia";
 import ProductContent from "./pages/ProductContent";
 import CollectionList from "./pages/CollectionList";
 import CollectionLayout from "./layouts/CollectionLayout";
+import { DocumentProvider } from "./contexts/DocumentProvider";
 
 function App() {
   return (
@@ -23,25 +24,27 @@ function App() {
       <BrowseSettingsProvider>
         <Theme />
         <GlobalModalsProvider>
-          <Routes>
-            <Route path="/" element={<MainLayout />} >
-              <Route index element={<CampaignList />} />
-              <Route path="creators" element={<CampaignList />} />
-              <Route path="campaigns/:id" element={<CampaignLayout />}>
-                <Route index element={<CampaignHome />} />
-                <Route path="posts" element={<CampaignContent type="post" />} />
-                <Route path="collections" element={<CollectionList />} />
-                <Route path="shop" element={<CampaignContent type="product" />} />
-                <Route path="media" element={<CampaignMedia />} />
-                <Route path="about" element={<AboutCampaign />} />
+          <DocumentProvider>
+            <Routes>
+              <Route path="/" element={<MainLayout />} >
+                <Route index element={<CampaignList />} />
+                <Route path="creators" element={<CampaignList />} />
+                <Route path="campaigns/:id" element={<CampaignLayout />}>
+                  <Route index element={<CampaignHome />} />
+                  <Route path="posts" element={<CampaignContent type="post" />} />
+                  <Route path="collections" element={<CollectionList />} />
+                  <Route path="shop" element={<CampaignContent type="product" />} />
+                  <Route path="media" element={<CampaignMedia />} />
+                  <Route path="about" element={<AboutCampaign />} />
+                </Route>
+                <Route path="posts/:id" element={<PostContent />} />
+                <Route path="products/:id" element={<ProductContent />} />
+                <Route path="collections/:id" element={<CollectionLayout />}>
+                  <Route index element={<CampaignContent type="post" collection />} />
+                </Route>
               </Route>
-              <Route path="posts/:id" element={<PostContent />} />
-              <Route path="products/:id" element={<ProductContent />} />
-              <Route path="collections/:id" element={<CollectionLayout />}>
-                <Route index element={<CampaignContent type="post" collection />} />
-              </Route>
-            </Route>
-          </Routes>
+            </Routes>
+          </DocumentProvider>
         </GlobalModalsProvider>
       </BrowseSettingsProvider>
     </APIProvider>

@@ -18,6 +18,7 @@ import FilterModalButton from "../components/FilterModalButton";
 import ProductList from "../components/ProductList";
 import SearchInputBox, { type SearchInputBoxHandle } from "../components/SearchInputBox";
 import { type Collection } from "../../../entities/Post";
+import { useDocument } from "../contexts/DocumentProvider";
 
 interface CampaignContentProps<T extends ContentType> {
   type: T;
@@ -67,6 +68,7 @@ function CampaignContent<T extends ContentType>(props: CampaignContentProps<T>) 
   const collectionId = isCollection ? domainId : null;
 
   const { api } = useAPI();
+  const { setTitle } = useDocument();
   const { settings } = useBrowseSettings();
   const { scrollTo } = useScroll();
   const [viewParams, setViewParams] = useReducer(viewParamsReducer, getInitialViewParams(settings));
@@ -152,6 +154,22 @@ function CampaignContent<T extends ContentType>(props: CampaignContentProps<T>) 
 
     return () => abortController.abort();
   }, [api, campaignId, contentType]);
+
+  useEffect(() => {
+    const parts: string[] = [];
+    if (isCollection && collection) {
+      if (collection.title) {
+        parts.push(collection.title);
+      }
+      if (campaign?.name) {
+        parts.push(`Collection from ${campaign.name}`);
+      }
+      if (collection.numPosts !== null) {
+        parts.push(`${collection.numPosts} posts`);
+      }
+      setTitle(parts.join(' | '));
+    }
+  }, [setTitle, isCollection, collection, campaign]);
 
   const gotoPage = useCallback((page: number, replaceState = false) => {
     setSearchParams((/*prev*/) => {

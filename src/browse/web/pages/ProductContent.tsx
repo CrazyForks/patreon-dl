@@ -4,10 +4,12 @@ import { Container, Row, Col } from "react-bootstrap";
 import { useAPI } from "../contexts/APIProvider";
 import { type Product } from "../../../entities";
 import ProductCard from "../components/ProductCard";
+import { useDocument } from "../contexts/DocumentProvider";
 
 function ProductContent() {
   const {id: productId} = useParams();
   const { api } = useAPI();
+  const { setTitle } = useDocument();
   const [product, setContent] = useState<Product | null>(null);
 
   useEffect(() => {
@@ -24,6 +26,10 @@ function ProductContent() {
 
     return () => abortController.abort();
   }, [api, productId]);
+
+  useEffect(() => {
+    setTitle(product?.name || null);
+  }, [setTitle, product]);
 
   if (!product) {
     return null;

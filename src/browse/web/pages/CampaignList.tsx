@@ -12,6 +12,7 @@ import { useSearchParams } from "react-router";
 import { useScroll } from "../contexts/MainContentScrollProvider";
 import { type BrowseSettings } from "../../types/Settings";
 import { useBrowseSettings } from "../contexts/BrowseSettingsProvider";
+import { useDocument } from "../contexts/DocumentProvider";
 
 interface ViewParams {
   sortBy: CampaignListSortBy;
@@ -50,11 +51,16 @@ const viewParamsReducer = (
 
 function CampaignList() {
   const { api } = useAPI();
+  const { setTitle } = useDocument();
   const { settings } = useBrowseSettings();
   const { scrollTo } = useScroll();
   const [viewParams, setViewParams] = useReducer(viewParamsReducer, getInitialViewParams(settings));
   const [list, setList] = useState<CampaignList | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    setTitle('Home');
+  }, [setTitle]);
 
   useEffect(() => {
     const { sortBy, page } = viewParams;
