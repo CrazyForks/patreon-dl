@@ -80,6 +80,9 @@ export default class PostDownloader extends Downloader<Post> {
       else if (postFetch.type === 'byCollection') {
         this.log('info', `Targeting posts in collection #${postFetch.collectionId}`);
       }
+      else if (postFetch.type === 'byURL') {
+        this.log('info', `Targeting posts at '${postFetch.url}'`);
+      }
       else if (postFetch.type === 'byFile') {
         this.log('info', `Target post given by API data in "${postFetch.filePath}"`);
       }
@@ -274,6 +277,9 @@ export default class PostDownloader extends Downloader<Post> {
       }
       else if (postFetch.type === 'byCollection') {
         this.log('info', `Done downloading posts in collection #${postFetch.collectionId}`);
+      }
+      else if (postFetch.type === 'byURL') {
+        this.log('info', `Done downloading posts at '${postFetch.url}'`);
       }
       else if (postFetch.type === 'byFile') {
         this.log('info', `Done downloading post given in "${postFetch.filePath}"`);
@@ -649,8 +655,8 @@ export default class PostDownloader extends Downloader<Post> {
     };
   }
 
-  #isFetchingMultiplePosts(postFetch: DownloaderConfig<Post>['postFetch']): postFetch is DownloaderConfig<Post>['postFetch'] & { type: 'byUser' | 'byUserId' | 'byCollection' } {
-    return postFetch.type === 'byUser' || postFetch.type === 'byUserId' || postFetch.type === 'byCollection';
+  #isFetchingMultiplePosts(postFetch: DownloaderConfig<Post>['postFetch']): postFetch is DownloaderConfig<Post>['postFetch'] & { type: 'byUser' | 'byUserId' | 'byCollection' | 'byURL' } {
+    return postFetch.type === 'byUser' || postFetch.type === 'byUserId' || postFetch.type === 'byCollection' || postFetch.type === 'byURL';
   }
 
   async __getCampaign(signal?: AbortSignal) {
