@@ -245,8 +245,8 @@ export default class PostsFetcher extends EventEmitter {
     this.#setStatus({ status: 'error', error });
   }
 
-  #isFetchingMultiplePosts(postFetch: DownloaderConfig<Post>['postFetch']): postFetch is DownloaderConfig<Post>['postFetch'] & { type: 'byUser' | 'byUserId' | 'byCollection' } {
-    return postFetch.type === 'byUser' || postFetch.type === 'byUserId' || postFetch.type === 'byCollection';
+  #isFetchingMultiplePosts(postFetch: DownloaderConfig<Post>['postFetch']): postFetch is DownloaderConfig<Post>['postFetch'] & { type: 'byUser' | 'byUserId' | 'byCollection' | 'byURL' } {
+    return postFetch.type === 'byUser' || postFetch.type === 'byUserId' || postFetch.type === 'byCollection' || postFetch.type === 'byURL';
   }
 
   async #getInitialPostsAPIURL() {
@@ -282,8 +282,10 @@ export default class PostsFetcher extends EventEmitter {
         return URLHelper.constructCampaignPageURL({ userId: postFetch.userId });
       case 'byCollection':
         return URLHelper.constructCollectionURL(postFetch.collectionId);
+      case 'byURL':
+        return postFetch.url;
       default:
-        throw Error(`postFetch type mismatch: expecting 'byUser', 'byUserId' or 'byCollection' but got '${postFetch.type}'`);
+        throw Error(`postFetch type mismatch: expecting 'byUser', 'byUserId', 'byCollection' or 'byURL' but got '${postFetch.type}'`);
     }
   }
 

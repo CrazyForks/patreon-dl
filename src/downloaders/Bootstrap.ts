@@ -47,6 +47,11 @@ export interface PostDownloaderBootstrapData extends BootstrapData {
     filters?: Record<string, any>;
     campaignId?: string;
   } | {
+    type: 'byURL';
+    url: string;
+    filters?: Record<string, any>;
+    campaignId?: string;
+  } | {
     type: 'byFile';
     filePath: string;
   };
@@ -145,6 +150,17 @@ export default class Bootstrap {
           type: 'byCollection',
           collectionId: analysis.collectionId,
           filters: analysis.filters
+        }
+      } as PostDownloaderBootstrapData;
+    }
+
+    if (analysis.type === 'customURL') {
+      return {
+        type: 'post',
+        targetURL: url,
+        postFetch: {
+          type: 'byURL',
+          url: analysis.url
         }
       } as PostDownloaderBootstrapData;
     }
