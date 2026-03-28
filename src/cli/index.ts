@@ -42,6 +42,15 @@ export default class PatreonDownloaderCLI {
       this.#packageInfo.name || 'patreon-dl', { suffix: '' }).config;
   }
 
+  #printOptionError(error: any) {
+    console.error(
+      'Error processing options: ',
+      error instanceof Error ? error.message : error,
+      EOL,
+      'See usage with \'-h\' option.');
+    return this.exit(1);
+  };
+
   async start() {
     if (CommandLineParser.showUsage()) {
       return this.exit(0);
@@ -51,26 +60,67 @@ export default class PatreonDownloaderCLI {
       console.log(`${EOL}${this.#packageInfo.banner}${EOL}`);
     }
 
-    const __printOptionError = (error: any) => {
-      console.error(
-        'Error processing options: ',
-        error instanceof Error ? error.message : error,
-        EOL,
-        'See usage with \'-h\' option.');
-      return this.exit(1);
-    };
-
     const ytCredsPath = this.#getYouTubeCredentialsPath();
     if (CommandLineParser.configureYouTube()) {
       return this.exit(await YouTubeConfigurator.start(ytCredsPath));
     }
 
+    if (await this.#listTiers()) {
+      return;
+    }
+
+    let options;
+    try {
+      options = getCLIOptions();
+    }
+    catch (error) {
+      return this.#printOptionError(error);
+    }
+
+    const targetsWithError: string[] = [];
+    const targetEndMessages: { url: string; message: string; }[] = [];
+    for (let i = 0; i < options.targetURLs.length; i++) {
+      const { hasError, aborted, endMessage } = await this.#createAndStartDownloader(options.targetURLs, i, options);
+      if (aborted) {
+        return this.exit(1);
+      }
+      const targetURL = options.targetURLs[i].url;
+      if (hasError) {
+        targetsWithError.push(targetURL);
+      }
+      targetEndMessages[i] = { url: targetURL, message: endMessage };
+    }
+    if (options.targetURLs.length > 0) {
+      // Print summary
+      console.log('');
+      const heading = `Total ${options.targetURLs.length} targets processed`;
+      console.log(heading);
+      console.log('-'.repeat(heading.length));
+      console.log('');
+      targetEndMessages.forEach(({ url, message }, i) => {
+        const s = `${i}: ${url}`;
+        console.log(s);
+        console.log(message);
+        console.log('');
+      });
+    }
+    if (targetsWithError.length > 0) {
+      if (options.targetURLs.length > 0) {
+        console.warn('There were errors processing the following URLs:', JSON.stringify(targetsWithError, null, 2));
+      }
+      return this.exit(1);
+    }
+    return this.exit(0);
+  }
+
+  async #listTiers(): Promise<boolean> {
     let listTiersTargets;
     try {
       listTiersTargets = CommandLineParser.listTiers();
     }
     catch (error) {
-      return __printOptionError(error);
+      this.#printOptionError(error);
+      return true;
     }
     if (listTiersTargets) {
       const { byVanity: vanities, byUserId: userIds } = listTiersTargets;
@@ -118,51 +168,11 @@ export default class PatreonDownloaderCLI {
       await __doList(vanities, 'vanity');
       await __doList(userIds, 'userId');
 
-      return this.exit(hasError ? 1 : 0);
+      this.exit(hasError ? 1 : 0);
+      return true;
     }
 
-    let options;
-    try {
-      options = getCLIOptions();
-    }
-    catch (error) {
-      return __printOptionError(error);
-    }
-
-    const targetsWithError: string[] = [];
-    const targetEndMessages: { url: string; message: string; }[] = [];
-    for (let i = 0; i < options.targetURLs.length; i++) {
-      const { hasError, aborted, endMessage } = await this.#createAndStartDownloader(options.targetURLs, i, options);
-      if (aborted) {
-        return this.exit(1);
-      }
-      const targetURL = options.targetURLs[i].url;
-      if (hasError) {
-        targetsWithError.push(targetURL);
-      }
-      targetEndMessages[i] = { url: targetURL, message: endMessage };
-    }
-    if (options.targetURLs.length > 0) {
-      // Print summary
-      console.log('');
-      const heading = `Total ${options.targetURLs.length} targets processed`;
-      console.log(heading);
-      console.log('-'.repeat(heading.length));
-      console.log('');
-      targetEndMessages.forEach(({ url, message }, i) => {
-        const s = `${i}: ${url}`;
-        console.log(s);
-        console.log(message);
-        console.log('');
-      });
-    }
-    if (targetsWithError.length > 0) {
-      if (options.targetURLs.length > 0) {
-        console.warn('There were errors processing the following URLs:', JSON.stringify(targetsWithError, null, 2));
-      }
-      return this.exit(1);
-    }
-    return this.exit(0);
+    return false;
   }
 
   #getYouTubeCredentialsPath() {
