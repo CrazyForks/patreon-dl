@@ -13,14 +13,14 @@ export type ListPostsResult = false | {
 };
 
 export async function listPosts(options: {
-  onOptionError: (error: unknown) => void;
+  onOptionError: (error: unknown) => Promise<void>;
 }): Promise<ListPostsResult> {
   let listPostsTargets;
   try {
     listPostsTargets = CommandLineParser.listPosts();
   }
   catch (error) {
-    options.onOptionError(error);
+    await options.onOptionError(error);
     return { hasError: true };
   }
   if (listPostsTargets) {

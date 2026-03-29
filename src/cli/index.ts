@@ -124,7 +124,7 @@ export default class PatreonDownloaderCLI {
       listTiersTargets = CommandLineParser.listTiers();
     }
     catch (error) {
-      this.#printOptionError(error);
+      await this.#printOptionError(error);
       return true;
     }
     if (listTiersTargets) {
@@ -173,7 +173,7 @@ export default class PatreonDownloaderCLI {
       await __doList(vanities, 'vanity');
       await __doList(userIds, 'userId');
 
-      this.exit(hasError ? 1 : 0);
+      await this.exit(hasError ? 1 : 0);
       return true;
     }
 
@@ -187,7 +187,7 @@ export default class PatreonDownloaderCLI {
     if (!result) {
       return false;
     }
-    this.exit(result.hasError ? 1 : 0);
+    await this.exit(result.hasError ? 1 : 0);
     return true;
   }
 

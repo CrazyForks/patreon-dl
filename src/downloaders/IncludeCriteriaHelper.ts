@@ -1,8 +1,9 @@
 import type { Post, Product } from "../entities/index.js";
 import { isYouTubeEmbed } from "../entities/Downloadable.js";
 import { type LogLevel } from "../utils/logging/Logger.js";
-import Logger, { commonLog } from "../utils/logging/Logger.js";
-import { DownloaderConfig } from "./Downloader.js";
+import type Logger from "../utils/logging/Logger.js";
+import { commonLog } from "../utils/logging/Logger.js";
+import { type DownloaderConfig } from "./Downloader.js";
 
 export type IncludeCriteriaCheckPostResult = {
   ok: true;

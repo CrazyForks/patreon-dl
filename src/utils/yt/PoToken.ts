@@ -1,4 +1,4 @@
-import { BG, buildURL, GOOG_API_KEY, WebPoSignalOutput } from 'bgutils-js';
+import { BG, buildURL, GOOG_API_KEY, type WebPoSignalOutput } from 'bgutils-js';
 import { type WebPoMinter } from 'bgutils-js/dist/core';
 import { JSDOM } from 'jsdom';
 import { type Dispatcher, fetch } from 'undici';
