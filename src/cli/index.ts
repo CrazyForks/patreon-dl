@@ -22,6 +22,7 @@ import { isDenoInstalled, type DeepPartial } from '../utils/Misc.js';
 import { createProxyAgent } from '../utils/Proxy.js';
 import { type Product } from '../entities/Product.js';
 import { type Post } from '../entities/Post.js';
+import { listPosts } from './helper/PostList.js';
 
 const YT_CREDENTIALS_FILENAME = 'youtube-credentials.json';
 
@@ -66,6 +67,10 @@ export default class PatreonDownloaderCLI {
     }
 
     if (await this.#listTiers()) {
+      return;
+    }
+
+    if (await this.#listPosts()) {
       return;
     }
 
@@ -173,6 +178,17 @@ export default class PatreonDownloaderCLI {
     }
 
     return false;
+  }
+
+  async #listPosts(): Promise<boolean> {
+    const result = await listPosts({
+      onOptionError: (error) => this.#printOptionError(error)
+    });
+    if (!result) {
+      return false;
+    }
+    this.exit(result.hasError ? 1 : 0);
+    return true;
   }
 
   #getYouTubeCredentialsPath() {

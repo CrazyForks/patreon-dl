@@ -25,6 +25,8 @@ const COMMAND_LINE_ARGS = {
   dryRun: 'dry-run',
   listTiers: 'list-tiers',
   listTiersByUserId: 'list-tiers-uid',
+  listPosts: 'list-posts',
+  listPostsByUserId: 'list-posts-uid',
   debugAPI: 'debug-api'
 } as const;
 
@@ -103,6 +105,18 @@ const OPT_DEFS = [
   {
     name: COMMAND_LINE_ARGS.listTiersByUserId,
     description: 'Same as \'--list-tiers\', but takes user ID instead of vanity.',
+    type: String,
+    typeLabel: '<user ID>'
+  },
+  {
+    name: COMMAND_LINE_ARGS.listPosts,
+    description: 'List posts by the given creator(s). Separate multiple creators with a comma.',
+    type: String,
+    typeLabel: '<creator>'
+  },
+  {
+    name: COMMAND_LINE_ARGS.listPostsByUserId,
+    description: 'Same as \'--list-posts\', but takes user ID instead of vanity.',
     type: String,
     typeLabel: '<user ID>'
   },
@@ -279,7 +293,7 @@ export default class CommandLineParser {
     return opts['configure-youtube'];
   }
 
-  static listTiers() {
+  static #listX(x: 'tiers' | 'posts') {
     let opts: commandLineArgs.CommandLineOptions;
     try {
       opts = this.#parseArgs();
@@ -288,13 +302,27 @@ export default class CommandLineParser {
       return null;
     }
 
-    const __getTargets = (opt: '--list-tiers' | '--list-tiers-uid') => {
-      const listTiers = opt === '--list-tiers' ? opts[COMMAND_LINE_ARGS.listTiers] : opts[COMMAND_LINE_ARGS.listTiersByUserId];
-      if (listTiers === null) { // Option provided but has empty value
+    const __getTargets = (opt: `--list-${typeof x}` | `--list-${typeof x}-uid`) => {
+      let listX;
+      switch (opt) {
+        case '--list-tiers':
+          listX = opts[COMMAND_LINE_ARGS.listTiers];
+          break;
+        case '--list-tiers-uid':
+          listX = opts[COMMAND_LINE_ARGS.listTiersByUserId];
+          break;
+        case '--list-posts':
+          listX = opts[COMMAND_LINE_ARGS.listPosts];
+          break;
+        case '--list-posts-uid':
+          listX = opts[COMMAND_LINE_ARGS.listPostsByUserId];
+          break;
+      }
+      if (listX === null) { // Option provided but has empty value
         return null;
       }
-      else if (typeof listTiers === 'string') {
-        const targets = listTiers.split(',').map((v) => v.trim()).filter((v) => v);
+      else if (typeof listX === 'string') {
+        const targets = listX.split(',').map((v) => v.trim()).filter((v) => v);
         if (targets.length === 0) {
           throw Error(`'${opt}' has invalid value`);
         }
@@ -303,10 +331,10 @@ export default class CommandLineParser {
       return false;
     };
 
-    const vanities = __getTargets('--list-tiers');
-    const userIds = __getTargets('--list-tiers-uid');
+    const vanities = __getTargets(`--list-${x}`);
+    const userIds = __getTargets(`--list-${x}-uid`);
     if (vanities === null || userIds === null) {
-      const opt = vanities === null ? '--list-tiers' : '--list-tiers-uid';
+      const opt = vanities === null ? `--list-${x}` : `--list-${x}-uid`;
       throw Error(`'${opt}' missing value`);
     }
 
@@ -318,6 +346,14 @@ export default class CommandLineParser {
       byVanity: vanities || [],
       byUserId: userIds || []
     };
+  }
+
+  static listTiers() {
+    return this.#listX('tiers');
+  }
+
+  static listPosts() {
+    return this.#listX('posts');
   }
 
   static #parseArgs() {
