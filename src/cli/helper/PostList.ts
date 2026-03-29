@@ -65,6 +65,7 @@ export async function listPosts(options: {
           console.log(`*** Posts by ${target} ***${EOL}`);
           
           postsFetcher.begin();
+          let breakWhile = false;
           while (postsFetcher.hasNext()) {
             const { list, aborted, error } = await postsFetcher.next();
             if (!list || aborted) {
@@ -93,9 +94,13 @@ export async function listPosts(options: {
                 const after = config.include.postsPublished.after?.valueOf().getTime();
                 if (publishedAt && after && publishedAt < after) {
                   // All subsequent posts will be out of date range, so we can return right away.
-                  return;
+                  breakWhile = true;
+                  break;
                 }
               }
+            }
+            if (breakWhile) {
+              break;
             }
           }
         }
@@ -107,7 +112,7 @@ export async function listPosts(options: {
     };
 
     await __doList(vanities, 'vanity');
-    if (abortController.signal.aborted) {
+    if (abortController.signal.aborted || hasError) {
       return { hasError };  
     }
     await __doList(userIds, 'userId');
