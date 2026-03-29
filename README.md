@@ -120,6 +120,8 @@ $ patreon-dl [OPTION]... URL
 | `--dry-run`   |      | Run without writing files to disk (except logs, if any). Intended for testing / debugging. |
 | <code><nobr>--list-tiers &lt;creator&gt;</nobr></code> | | <p>List tiers for the given creator(s). Separate multiple creators with a comma.</p>The purpose of this is to let you find out what tier IDs to set for `posts.in.tier` filtering option under `include` section of [configuration file](#configuration-file). |
 | <code><nobr>--list-tiers-uid &lt;user ID&gt;</nobr></code> | | Same as `--list-tiers`, but takes user ID instead of vanity. |
+| <code><nobr>--list-posts &lt;creator&gt;</nobr></code> | | <p>List posts by the given creator(s). Separate multiple creators with a comma.</p> |
+| <code><nobr>--list-posts-uid &lt;user ID&gt;</nobr></code> | | Same as `--list-posts`, but takes user ID instead of vanity. |
 | `--configure-youtube` | | <p>Configure YouTube connection.</p>`patreon-dl` supports downloading embedded YouTube videos. If you have a YouTube Premium account, you can connect `patreon-dl` to it for downloading Premium-quality streams. You will also need to connect to an account if you get a "Login required" error message during download.|
 
 ### URL
@@ -308,6 +310,12 @@ Note the URL shown in the output. Open this URL in a web browser to begin viewin
 > Keep in mind that the web server is in no way secure. It is meant for local browsing and should not be exposed to outside parties!
 
 ## Changelog
+
+3.8.0
+- Add support for custom URLs (creators hosting Patreon pages on their own domains) ([@lucasoskorep](https://github.com/lucasoskorep) - [PR #129](https://github.com/patrickkfkan/patreon-dl/pull/129)).
+- Fix YT download errors ([#132](https://github.com/patrickkfkan/patreon-dl/issues/132)).
+- Browse: set title tag based on content ([#127](https://github.com/patrickkfkan/patreon-dl/issues/127)).
+- CLI: add `--list-posts` / `--list-posts-uid` ([#126](https://github.com/patrickkfkan/patreon-dl/issues/126)).
 
 3.7.1
 - Check and skip download of Patreon-hosted videos that are protected by DRM; add `include.protectedMedia` / `protected.media` option.
