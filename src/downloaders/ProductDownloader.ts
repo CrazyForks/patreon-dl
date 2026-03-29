@@ -11,6 +11,7 @@ import Bootstrap from './Bootstrap.js';
 import ProductsFetcher from './ProductsFetcher.js';
 import { type ProductDirectories } from '../utils/FSHelper.js';
 import { type DBInstance } from '../browse/db/index.js';
+import { IncludeCriteriaHelper } from './IncludeCriteriaHelper.js';
 
 export default class ProductDownloader extends Downloader<Product> {
 
@@ -246,29 +247,39 @@ export default class ProductDownloader extends Downloader<Product> {
     signal?: AbortSignal
   ): Promise<{status: 'skippedUnviewable' | 'skippedPublishDateOutOfRange' | 'aborted' | 'downloaded' }> {
     // Step 1: Check whether we should download product
-    // -- 1.1 Accessibility
-    if (!product.isAccessible) {
-      if (this.config.include.lockedContent) {
-        this.log('warn', `Product #${product.id} is not accessible by current user`);
-      }
-      else {
-        this.log('warn', `Skipped downloading product #${product.id}: not accessible by current user`);
-        this.emit('targetEnd', {
-          target: product,
-          isSkipped: true,
-          skipReason: TargetSkipReason.Inaccessible,
-          skipMessage: 'Target is not accessible by current user'
-        });
-        return {
-          status: 'skippedUnviewable'
-        };
+    const criteriaHelper = new IncludeCriteriaHelper(this.logger);
+    const criteriaCheck = criteriaHelper.checkProduct(product, this.config);
+    if (!criteriaCheck.ok) {
+      switch (criteriaCheck.reason) {
+        case 'unviewable': {
+          this.log('warn', `Skipped downloading product #${product.id}: not accessible by current user`);
+          this.emit('targetEnd', {
+            target: product,
+            isSkipped: true,
+            skipReason: TargetSkipReason.Inaccessible,
+            skipMessage: 'Target is not accessible by current user'
+          });
+          return {
+            status: 'skippedUnviewable'
+          };
+        }
+        case 'publishDateOutOfRange': {
+          this.log('warn', `Skipped downloading product #${product.id}: publish date out of range`);
+          this.emit('targetEnd', {
+            target: product,
+            isSkipped: true,
+            skipReason: TargetSkipReason.PublishDateOutOfRange,
+            skipMessage: 'Publish date out of range'
+          });
+          return {
+            status: 'skippedPublishDateOutOfRange'
+          };
+        }
       }
     }
-    // -- 1.4 Config option 'include.productsPublished'
-    if (this.isPublishDateOutOfRange(product)) {
-      return {
-        status: 'skippedPublishDateOutOfRange'
-      };
+
+    if (!product.isAccessible && this.config.include.lockedContent) {
+      this.log('warn', `Product #${product.id} is not accessible by current user`);
     }
 
     this.fsHelper.createDir(productDirs.root);

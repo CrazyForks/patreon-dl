@@ -20,6 +20,7 @@ import { type DeepRequired } from '../utils/Misc.js';
 import { type Campaign } from '../entities/Campaign.js';
 import type DownloadTaskBatch from './task/DownloadTaskBatch.js';
 import { generateCollectionSummary } from './templates/CollectionInfo.js';
+import { IncludeCriteriaHelper } from './IncludeCriteriaHelper.js';
 
 export interface PostDownloaderContext {
   skipSaveCampaign?: boolean;
@@ -335,111 +336,63 @@ export default class PostDownloader extends Downloader<Post> {
     const downloadComments = scope.includes('comments');
       
     // Step 1: Check whether we should download post
-    // -- 1.1 Viewability
-    if (!post.isViewable) {
-      if (this.config.include.lockedContent) {
-        this.log('warn', `Post #${post.id} is not viewable by current user`);
-      }
-      else {
-        this.log('warn', `Skipped downloading post #${post.id}: not viewable by current user`);
-        this.emit('targetEnd', {
-          target: post,
-          isSkipped: true,
-          skipReason: TargetSkipReason.Inaccessible,
-          skipMessage: 'Target is not viewable by current user'
-        });
-        return {
-          status: 'skippedUnviewable'
-        };
-      }
-    }
-
-    // -- 1.2 Config option 'include.postsWithMediaType'
-    const postsWithMediaType = this.config.include.postsWithMediaType;
-    if (postsWithMediaType !== 'any') {
-      const hasAttachments = post.attachments.length > 0;
-      const hasAudio = !!post.audio || !!post.audioPreview;
-      const hasImages = post.images.length > 0;
-      const hasVideo = !!post.video || !!post.videoPreview || !!(post.embed && (post.embed.type === 'videoEmbed' || isYouTubeEmbed(post.embed)));
-      const isPodcast = post.postType === 'podcast'
-
-      let skip = false;
-      if (postsWithMediaType === 'none') {
-        skip = hasAttachments || hasAudio || hasImages || hasVideo;
-      }
-      else if (Array.isArray(postsWithMediaType)) {
-        skip = !(
-          (postsWithMediaType.includes('attachment') && hasAttachments) ||
-          (postsWithMediaType.includes('audio') && hasAudio) ||
-          (postsWithMediaType.includes('image') && hasImages) ||
-          (postsWithMediaType.includes('video') && hasVideo) ||
-          (postsWithMediaType.includes('podcast') && isPodcast && (hasAudio || hasVideo)));
-      }
-
-      if (skip) {
-        this.log('warn', `Skipped downloading post #${post.id}: unmet media type criteria`);
-        this.log('debug', 'Match criteria failed:', `config.include.postsWithMediaType: ${JSON.stringify(postsWithMediaType)} <-> post #${post.id}:`, {
-          hasAttachments,
-          hasAudio,
-          hasImages,
-          hasVideo
-        });
-        this.emit('targetEnd', {
-          target: post,
-          isSkipped: true,
-          skipReason: TargetSkipReason.UnmetMediaTypeCriteria,
-          skipMessage: 'Target does not meet media type criteria'
-        });
-        return {
-          status: 'skippedUnmetMediaTypeCriteria'
-        };
+    const criteriaHelper = new IncludeCriteriaHelper(this.logger);
+    const criteriaCheck = criteriaHelper.checkPost(post, this.config);
+    if (!criteriaCheck.ok) {
+      switch (criteriaCheck.reason) {
+        case 'unviewable': {
+          this.log('warn', `Skipped downloading post #${post.id}: not viewable by current user`);
+          this.emit('targetEnd', {
+            target: post,
+            isSkipped: true,
+            skipReason: TargetSkipReason.Inaccessible,
+            skipMessage: 'Target is not viewable by current user'
+          });
+          return {
+            status: 'skippedUnviewable'
+          };
+        }
+        case 'unmetMediaTypeCriteria': {
+          this.log('warn', `Skipped downloading post #${post.id}: unmet media type criteria`);
+          this.emit('targetEnd', {
+            target: post,
+            isSkipped: true,
+            skipReason: TargetSkipReason.UnmetMediaTypeCriteria,
+            skipMessage: 'Target does not meet media type criteria'
+          });
+          return {
+            status: 'skippedUnmetMediaTypeCriteria'
+          };
+        }
+        case 'notInTier': {
+          this.log('warn', `Skipped downloading post #${post.id}: not in tier`);
+          this.emit('targetEnd', {
+            target: post,
+            isSkipped: true,
+            skipReason: TargetSkipReason.NotInTier,
+            skipMessage: 'Target not in tier'
+          });
+          return {
+            status: 'skippedNotInTier'
+          };
+        }
+        case 'publishDateOutOfRange': {
+          this.log('warn', `Skipped downloading post #${post.id}: publish date out of range`);
+          this.emit('targetEnd', {
+            target: post,
+            isSkipped: true,
+            skipReason: TargetSkipReason.PublishDateOutOfRange,
+            skipMessage: 'Publish date out of range'
+          });
+          return {
+            status: 'skippedPublishDateOutOfRange'
+          };
+        }
       }
     }
 
-    // -- 1.3 Config option 'include.postsInTier'
-    const postsInTier = this.config.include.postsInTier;
-    const isAnyTier = postsInTier === 'any' || postsInTier.includes('any');
-    if (!isAnyTier) {
-      const applicableTierIds = postsInTier.filter((id) => post.campaign?.rewards.find((r) => r.id === id));
-      if (!post.campaign) {
-        this.log('warn', 'config.include.postsInTier: ignored - post missing campaign info');
-      }
-      else {
-        this.log('debug', 'config.include.postsInTier: applicable tier IDs:', applicableTierIds);
-      }
-      let skip = false;
-      if (!post.campaign) {
-        skip = false;
-      }
-      else if (applicableTierIds.length === 0) {
-        skip = true;
-      }
-      else if (!post.tiers.find((tier) => tier.id === 'patrons')) {
-        skip = applicableTierIds.every((id) => !post.tiers.find((tier) => tier.id === id));
-      }
-      if (skip) {
-        this.log('warn', `Skipped downloading post #${post.id}: not in tier`);
-        this.log('debug', 'Match criteria failed:', `config.include.postsInTier: ${JSON.stringify(applicableTierIds)} <-> post #${post.id}:`, post.tiers);
-        this.emit('targetEnd', {
-          target: post,
-          isSkipped: true,
-          skipReason: TargetSkipReason.NotInTier,
-          skipMessage: 'Target not in tier'
-        });
-        return {
-          status: 'skippedNotInTier'
-        };
-      }
-      if (post.campaign) {
-        this.log('debug', 'Match criteria OK:', `config.include.postsInTier: ${JSON.stringify(applicableTierIds)} <-> post #${post.id}:`, post.tiers);
-      }
-    }
-
-    // -- 1.4 Config option 'include.postsPublished'
-    if (this.isPublishDateOutOfRange(post)) {
-      return {
-        status: 'skippedPublishDateOutOfRange'
-      };
+    if (!post.isViewable && this.config.include.lockedContent) {
+      this.log('warn', `Post #${post.id} is not viewable by current user`);
     }
 
     if (!downloadPost && downloadComments) {
