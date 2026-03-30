@@ -333,7 +333,7 @@ export function MediaDBMixin<TBase extends DBConstructor>(Base: TBase) {
         const value = groupBy === 'year' ?
           String(date.getUTCFullYear())
           : getYearMonthString(date);
-        whereValues.push(String(value));
+        whereValues.push(value);
       }
       const whereClause = whereClauseParts.join(' AND ');
       const strftimeFormat = groupBy === 'year' ? '%Y' : '%Y-%m'

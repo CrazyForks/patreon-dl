@@ -8,8 +8,8 @@ import { pickDefined } from '../utils/Misc.js';
 import ObjectHelper from '../utils/ObjectHelper.js';
 import Parser from './Parser.js';
 import URLHelper from '../utils/URLHelper.js';
-import Logger from '../utils/logging/Logger.js';
-import Fetcher from '../utils/Fetcher.js';
+import type Logger from '../utils/logging/Logger.js';
+import type Fetcher from '../utils/Fetcher.js';
 
 export default class PostParser extends Parser {
 
@@ -275,8 +275,8 @@ export default class PostParser extends Parser {
             embed.thumbnailURL = ytThumbnailURL;
             const __replace = (o: { imageURLs: Record<string, string | null | undefined> }) => {
               Object.keys(o.imageURLs).forEach((key) => {
-                if (o?.imageURLs[key as keyof typeof o.imageURLs] === originalThumbnailURL) {
-                  o!.imageURLs[key as keyof typeof o.imageURLs] = ytThumbnailURL;
+                if (o?.imageURLs[key] === originalThumbnailURL) {
+                  o.imageURLs[key] = ytThumbnailURL;
                 }
               });
             }

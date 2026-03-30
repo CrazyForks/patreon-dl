@@ -725,7 +725,7 @@ export function ContentDBMixin<TBase extends CampaignDBConstructor>(Base: TBase)
         const value = groupBy === 'year' ?
           String(date.getUTCFullYear())
           : getYearMonthString(date);
-        whereValues.push(String(value));
+        whereValues.push(value);
       }
       const whereClause = `WHERE ${whereClauseParts.join(' AND ')}`;
       const strftimeFormat = groupBy === 'year' ? '%Y' : '%Y-%m'
