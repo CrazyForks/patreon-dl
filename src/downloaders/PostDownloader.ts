@@ -121,7 +121,7 @@ export default class PostDownloader extends Downloader<Post> {
       let campaignSaved = false;
       let stopConditionMet = false;
       const savedCollectionIds: string[] = [];
-      const postsParser = new PostParser(this.logger);
+      const postsParser = new PostParser(this.fetcher, this.logger);
       while (postsFetcher.hasNext()) {
         const { list, aborted, error } = await postsFetcher.next();
         if (!list || aborted) {
@@ -172,7 +172,7 @@ export default class PostDownloader extends Downloader<Post> {
             const { json } = await this.commonFetchAPI(postURL, signal);
             let refreshed: Post | null = null;
             if (json) {
-              refreshed = postsParser.parsePostsAPIResponse(json, postURL).items[0] || null;
+              refreshed = (await postsParser.parsePostsAPIResponse(json, postURL)).items[0] || null;
               if (!refreshed) {
                 this.log('warn', `Refreshed post #${_post.id} but got empty value - going to use existing data`);
               }
@@ -635,7 +635,7 @@ export default class PostDownloader extends Downloader<Post> {
       signal
     });
     const { campaignId } = await postsFetcher.getInitialData(url);
-    const postsParser = new PostParser(this.logger);
+    const postsParser = new PostParser(this.fetcher, this.logger);
     const res = await this.fetchCampaign(campaignId);
     if (signal?.aborted) {
       throw new Error('Aborted');
@@ -841,8 +841,8 @@ export default class PostDownloader extends Downloader<Post> {
           json = null;
         }
         if (json) {
-          const parser = new PostParser();
-          const parentPost = parser.parsePostsAPIResponse(json, apiURL).items[0];
+          const parser = new PostParser(this.fetcher);
+          const parentPost = (await parser.parsePostsAPIResponse(json, apiURL)).items[0];
           if (!parentPost) {
             this.log('error', `Error fetching linked attachment ${laStr} from parent post #${la.postId}: post data not found in response of "${apiURL}"`);
           }

@@ -329,7 +329,7 @@ export default abstract class Downloader<T extends DownloaderType> extends Event
     if (downloader instanceof PostDownloader) {
       if (typeof params === 'object' && params.campaignId) {
         const { json } = await downloader.fetchCampaign(params.campaignId, signal);
-        const parser = new PostParser(options instanceof Logger ? options : options?.logger);
+        const parser = new PostParser(downloader.getFetcher(), options instanceof Logger ? options : options?.logger);
         return parser.parseCampaignAPIResponse(json);
       }
       return downloader.__getCampaign(signal);

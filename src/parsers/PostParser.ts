@@ -1,6 +1,6 @@
 import { stripHtml } from 'string-strip-html';
 import { type Campaign } from '../entities/Campaign.js';
-import { type Downloadable } from '../entities/Downloadable.js';
+import { isYouTubeEmbed, type Downloadable } from '../entities/Downloadable.js';
 import { type AttachmentMediaItem, type AudioMediaItem, type DefaultImageMediaItem, type MediaItem, type PostCoverImageMediaItem, type PostThumbnailMediaItem, type VideoMediaItem } from '../entities/MediaItem.js';
 import { type LinkedAttachment, PostType, type Post, type PostList as PostList, type PostEmbed, type Collection, type PostTag } from '../entities/Post.js';
 import { type Tier } from '../entities/Reward.js';
@@ -8,12 +8,21 @@ import { pickDefined } from '../utils/Misc.js';
 import ObjectHelper from '../utils/ObjectHelper.js';
 import Parser from './Parser.js';
 import URLHelper from '../utils/URLHelper.js';
+import Logger from '../utils/logging/Logger.js';
+import Fetcher from '../utils/Fetcher.js';
 
 export default class PostParser extends Parser {
 
   protected name = 'PostParser';
 
-  parsePostsAPIResponse(json: any, src: string): PostList {
+  #fetcher: Fetcher;
+
+  constructor(fetcher: Fetcher, logger?: Logger | null) {
+    super(logger);
+    this.#fetcher = fetcher;
+  }
+
+  async parsePostsAPIResponse(json: any, src: string): Promise<PostList> {
 
     this.log('debug', `Parse API data obtained from "${src}"`);
 
@@ -250,6 +259,46 @@ export default class PostParser extends Parser {
           url: embedJSON.url || null,
           thumbnailURL: ObjectHelper.getProperty(attributes, 'image.large_url') || null // Use cover image
         };
+      }
+      // YouTube embeds can have 0-byte thumbnail:
+      // https://github.com/patrickkfkan/patreon-dl/issues/120
+      if (embed && isYouTubeEmbed(embed) && embed.url) {
+        // Credit: @Fabelwesen (https://github.com/Fabelwesen)
+        const ytMatch = embed.url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([a-zA-Z0-9_-]{11})/);
+        if (ytMatch) {
+          const ytId = ytMatch[1];
+          // Use maxresdefault for best quality
+          const ytThumbnailURL = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+          if (await this.#fetcher.test(ytThumbnailURL)) {
+            this.log('debug', `Set YouTube embed thumbnail URL to "${ytThumbnailURL}"`);
+            const originalThumbnailURL = embed.thumbnailURL;
+            embed.thumbnailURL = ytThumbnailURL;
+            const __replace = (o: { imageURLs: Record<string, string | null | undefined> }) => {
+              Object.keys(o.imageURLs).forEach((key) => {
+                if (o?.imageURLs[key as keyof typeof o.imageURLs] === originalThumbnailURL) {
+                  o!.imageURLs[key as keyof typeof o.imageURLs] = ytThumbnailURL;
+                }
+              });
+            }
+            if (coverImage) {
+              __replace(coverImage);
+            }
+            if (thumbnail) {
+              __replace(thumbnail);
+            }
+            if (images) {
+              for (const img of images) {
+                __replace(img);
+                if (img.thumbnailURL === originalThumbnailURL) {
+                  img.thumbnailURL = ytThumbnailURL;
+                }
+              }
+            }
+          }
+          else {
+            this.log('debug', `Test failed for YouTube thumbnail URL "${ytThumbnailURL}". Going to use URL from API data.`);
+          }
+        }
       }
 
       // Tiers

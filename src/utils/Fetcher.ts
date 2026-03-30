@@ -285,6 +285,12 @@ export default class Fetcher {
     }
   }
 
+  async test(url: string) {
+    const request = new Request(url, { method: 'HEAD' });
+    const res = await fetch(request, { dispatcher: this.#proxyAgent });
+    return res.ok;
+  }
+
   #commitDownload(tmpFilePath: string, destFilePath: string, size: number, cleanup?: () => void) {
     try {
       this.log('debug', `Commit "${tmpFilePath}" to "${destFilePath}; filesize: ${size} bytes`);

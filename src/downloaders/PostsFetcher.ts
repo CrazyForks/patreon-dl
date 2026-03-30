@@ -162,8 +162,8 @@ export default class PostsFetcher extends EventEmitter {
       return;
     }
 
-    const postsParser = new PostParser(this.logger);
-    const list = postsParser.parsePostsAPIResponse(json, postsSrc);
+    const postsParser = new PostParser(this.fetcher, this.logger);
+    const list = await postsParser.parsePostsAPIResponse(json, postsSrc);
     this.#fetched = [ list ];
     this.#pointers.lastFetched = this.#pointers.fetching;
     this.#pointers.fetching = null;
@@ -201,7 +201,7 @@ export default class PostsFetcher extends EventEmitter {
           nextURL = null;
         }
         else {
-          const list = postsParser.parsePostsAPIResponse(json, nextURL);
+          const list = await postsParser.parsePostsAPIResponse(json, nextURL);
           this.#fetched.push(list);
           const fetched = list.items.length;
           totalFetched += fetched;
