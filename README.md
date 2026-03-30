@@ -311,6 +311,9 @@ Note the URL shown in the output. Open this URL in a web browser to begin viewin
 
 ## Changelog
 
+3.8.1
+- YT embeds: obtain images directly from YT instead of Patreon API data, since the latter could give 0-byte content ([@Fabelwesen](https://github.com/Fabelwesen) - [#120](https://github.com/patrickkfkan/patreon-dl/issues/120)).
+
 3.8.0
 - Add support for custom URLs (creators hosting Patreon pages on their own domains) ([@lucasoskorep](https://github.com/lucasoskorep) - [PR #129](https://github.com/patrickkfkan/patreon-dl/pull/129)).
 - Fix YT download errors ([#132](https://github.com/patrickkfkan/patreon-dl/issues/132)).
