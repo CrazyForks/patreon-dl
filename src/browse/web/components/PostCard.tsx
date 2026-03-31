@@ -15,6 +15,7 @@ import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import lgZoom from 'lightgallery/plugins/zoom';
 import lgVideo from 'lightgallery/plugins/video';
 import FadeContent from "./FadeContent";
+import { getCampaignBaseUrl, getContentUrl } from "../utils/Misc";
 
 interface PostCardProps {
   post: Post;
@@ -95,7 +96,7 @@ function PostCard(props: PostCardProps) {
   }, [post]);
 
   const titleEl = useMemo(() => {
-    const url = new URL(`/posts/${post.id}`, window.location.href);
+    const url = new URL(getContentUrl(post), window.location.href);
     if (contextQS) {
       url.search = contextQS;
     }
@@ -150,7 +151,7 @@ function PostCard(props: PostCardProps) {
   const tagsEl = post.tags && post.tags.length > 0 && post.campaign && (
     <Stack direction="horizontal" gap={2} className="mb-3 flex-wrap">
       {post.tags.map((tag) => {
-        const tagUrl = new URL(`/campaigns/${post.campaign!.id}/posts`, window.location.href);
+        const tagUrl = new URL(`${getCampaignBaseUrl(post.campaign!)}/posts`, window.location.href);
         tagUrl.searchParams.set('filter_tag_id', tag.id);
         return (
           <Badge key={tag.id} bg="secondary">
@@ -216,7 +217,7 @@ function PostCard(props: PostCardProps) {
                 className="rounded"
                 style={{ width: '2.5em', height: '2.5em', objectFit: 'cover'}} />
               <span>
-                <Link to={`/campaigns/${post.campaign.id}`}
+                <Link to={getCampaignBaseUrl(post.campaign)}
                   className="text-body"
                 >
                   {post.campaign.name}

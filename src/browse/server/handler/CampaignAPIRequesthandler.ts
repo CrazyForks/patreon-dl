@@ -33,11 +33,20 @@ export default class CampaignAPIRequestHandler extends Basehandler {
   }
 
   handleGetRequest(req: Request, res: Response, id: string) {
+    const byVanity = req.query['by_vanity'] ? this.getQueryParamValue<'true' | 'false'>(
+      req,
+      'by_vanity',
+      ['true', 'false']
+    ) === 'true' ? true : false : undefined;
     const withCounts = req.query['with_counts'] ? this.getQueryParamValue<'true' | 'false'>(
       req,
       'with_counts',
       ['true', 'false']
     ) === 'true' ? true : false : undefined;
+    if (byVanity) {
+      res.json(this.#api.getCampaign({ vanity: id, withCounts }));
+      return;
+    }
     res.json(this.#api.getCampaign({id, withCounts}));
   }
 }

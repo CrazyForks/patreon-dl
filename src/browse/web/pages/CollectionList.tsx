@@ -8,11 +8,12 @@ import { Container, Row, Col, Form } from "react-bootstrap";
 import CollectionCard from "../components/CollectionCard";
 import ShowingText from "../components/ShowingText";
 import PageNav from "../components/PageNav";
-import { useParams, useSearchParams } from "react-router";
+import { useOutletContext, useSearchParams } from "react-router";
 import { useScroll } from "../contexts/MainContentScrollProvider";
 import { type BrowseSettings } from "../../types/Settings";
 import { useBrowseSettings } from "../contexts/BrowseSettingsProvider";
 import SearchInputBox from "../components/SearchInputBox";
+import { type CampaignLayoutOutletContext } from "../layouts/CampaignLayout";
 
 interface ViewParams {
   search: string;
@@ -55,13 +56,13 @@ const viewParamsReducer = (
 };
 
 function CollectionList() {
-  const { id: campaignId } = useParams();
   const { api } = useAPI();
   const { settings } = useBrowseSettings();
   const { scrollTo } = useScroll();
   const [viewParams, setViewParams] = useReducer(viewParamsReducer, getInitialViewParams(settings));
   const [list, setList] = useState<CollectionList | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const { campaign } = useOutletContext<CampaignLayoutOutletContext>();
 
   const search = useCallback((value: string) => {
     setViewParams({
@@ -71,14 +72,14 @@ function CollectionList() {
 
   useEffect(() => {
     const { sortBy, page } = viewParams;
-    if (!campaignId || sortBy === null || page === null) {
+    if (!campaign || sortBy === null || page === null) {
       return;
     }
     const abortController = new AbortController();
     void (async () => {
       const _list = await api.getCollectionList({
         ...viewParams,
-        campaign: campaignId,
+        campaign: campaign.id,
         sortBy,
         page
       });

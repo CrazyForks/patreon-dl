@@ -13,12 +13,14 @@ function ProductContent() {
   const [product, setContent] = useState<Product | null>(null);
 
   useEffect(() => {
-    if (!productId) {
+    // Check if productId is in format <slug>-<id>. If so, extract the id part.
+    const resolvedProductId = productId && productId.includes('-') ? productId.split('-').pop() : productId;
+    if (!resolvedProductId) {
       return;
     }
     const abortController = new AbortController();
     void (async () => {
-      const product = await api.getProduct(productId);
+      const product = await api.getProduct(resolvedProductId);
       if (!abortController.signal.aborted) {
         setContent(product);
       }

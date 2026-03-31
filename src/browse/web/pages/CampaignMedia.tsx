@@ -2,8 +2,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { useAPI } from "../contexts/APIProvider";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import ShowingText from "../components/ShowingText";
-import { type Campaign } from "../../../entities";
-import { NavigationType, useNavigationType, useParams, useSearchParams } from "react-router";
+import { NavigationType, useNavigationType, useOutletContext, useSearchParams } from "react-router";
 import PageNav from "../components/PageNav";
 import deepEqual from "deep-equal";
 import copy from 'fast-copy';
@@ -14,6 +13,7 @@ import FilterModalButton from "../components/FilterModalButton";
 import MediaGallery from "../components/MediaGallery";
 import { type BrowseSettings } from "../../types/Settings";
 import { useBrowseSettings } from "../contexts/BrowseSettingsProvider";
+import { type CampaignLayoutOutletContext } from "../layouts/CampaignLayout";
 
 interface ViewParams {
   filter: Filter<MediaFilterSearchParams> | null;
@@ -51,14 +51,12 @@ const viewParamsReducer = (
 };
 
 function CampaignMedia() {
-  const { id: campaignId } = useParams();
-  
   const subject = { singular: 'media item', plural: 'media items' };
   const { api } = useAPI();
   const { settings } = useBrowseSettings();
   const { scrollTo } = useScroll();
   const [viewParams, setViewParams] = useReducer(viewParamsReducer, getInitialViewParams(settings));
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
+  const { campaign } = useOutletContext<CampaignLayoutOutletContext>();
   const [list, setList] = useState<MediaList<any> | null>(null);
   const [filterOptions, setFilterOptions] = useState<FilterData<MediaFilterSearchParams> | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -66,20 +64,20 @@ function CampaignMedia() {
   const isFirstLoadRef = useRef(true);
 
   useEffect(() => {
-    if (!campaignId) {
+    setFilterOptions(null);
+    if (!campaign) {
       return;
     }
-    setFilterOptions(null);
     const abortController = new AbortController();
     void (async () => {
-      const options = await api.getMediaFilterOptions(campaignId);
+      const options = await api.getMediaFilterOptions(campaign.id);
       if (!abortController.signal.aborted) {
         setFilterOptions(options);
       }
     })();
 
     return () => abortController.abort();
-  }, [api, campaignId]);
+  }, [api, campaign]);
 
   const gotoPage = useCallback((page: number, replaceState = false) => {
     setSearchParams((/*prev*/) => {
@@ -100,21 +98,6 @@ function CampaignMedia() {
       isFirstLoadRef.current = true;
     }
   }, [navigationType]);
-
-  useEffect(() => {
-    if (!campaignId) {
-      return;
-    }
-    const abortController = new AbortController();
-    void (async () => {
-      const campaign = await api.getCampaign({ id: campaignId });
-      if (!abortController.signal.aborted) {
-        setCampaign(campaign);
-      }
-    })();
-
-    return () => abortController.abort();
-  }, [api, campaignId]);
 
   useEffect(() => {
     const { filter, page } = viewParams;

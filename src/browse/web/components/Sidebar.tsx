@@ -8,6 +8,7 @@ import { Link } from "react-router";
 import { useGlobalModals } from "../contexts/GlobalModalsProvider";
 import CustomScrollbars from "./CustomScrollbars";
 import MediaImage from "./MediaImage";
+import { getCampaignBaseUrl } from "../utils/Misc";
 
 interface SidebarProps {
   closeButton?: boolean;
@@ -52,7 +53,7 @@ function Sidebar(props: SidebarProps) {
     }
     const links = campaigns.map((campaign) => (
       <Link
-        to={`/campaigns/${campaign.id}`}
+        to={getCampaignBaseUrl(campaign)}
         className="sidebar__link"
         onClick={handleLinkClick}
       >

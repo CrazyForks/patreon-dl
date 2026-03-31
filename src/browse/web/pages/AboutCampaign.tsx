@@ -1,22 +1,20 @@
 import "../assets/styles/AboutCampaign.scss";
 import "../assets/styles/Slider.scss";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useAPI } from "../contexts/APIProvider";
-import { type Campaign, type Reward } from "../../../entities";
-import { useParams } from "react-router";
+import { type Reward } from "../../../entities";
+import { useOutletContext } from "react-router";
 import RewardCard from "../components/RewardCard";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import SliderArrow from "../components/SliderArrow";
 import { Stack } from "react-bootstrap";
+import { type CampaignLayoutOutletContext } from "../layouts/CampaignLayout";
 
 const MIN_TIER_CARD_WIDTH = 300;
 
 function AboutCampaign() {
-  const { id: campaignId } = useParams();
-  const { api } = useAPI();
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
+  const { campaign } = useOutletContext<CampaignLayoutOutletContext>();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
 
@@ -32,21 +30,6 @@ function AboutCampaign() {
 
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    if (!campaignId) {
-      return;
-    }
-    const abortController = new AbortController();
-    void (async () => {
-      const campaign = await api.getCampaign({ id: campaignId });
-      if (!abortController.signal.aborted) {
-        setCampaign(campaign);
-      }
-    })();
-
-    return () => abortController.abort();
-  }, [api, campaignId]);
 
   const rewardSlider = useMemo(() => {
     if (!campaign || !containerWidth) {

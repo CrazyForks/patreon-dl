@@ -19,6 +19,16 @@ import CollectionLayout from "./layouts/CollectionLayout";
 import { DocumentProvider } from "./contexts/DocumentProvider";
 
 function App() {
+  const campaignSubRoutes = (
+    <>
+      <Route index element={<CampaignHome />} />
+      <Route path="posts" element={<CampaignContent type="post" />} />
+      <Route path="collections" element={<CollectionList />} />
+      <Route path="shop" element={<CampaignContent type="product" />} />
+      <Route path="media" element={<CampaignMedia />} />
+      <Route path="about" element={<AboutCampaign />} />
+    </>
+  );
   return (
     <APIProvider>
       <BrowseSettingsProvider>
@@ -30,17 +40,15 @@ function App() {
                 <Route index element={<CampaignList />} />
                 <Route path="creators" element={<CampaignList />} />
                 <Route path="campaigns/:id" element={<CampaignLayout />}>
-                  <Route index element={<CampaignHome />} />
-                  <Route path="posts" element={<CampaignContent type="post" />} />
-                  <Route path="collections" element={<CollectionList />} />
-                  <Route path="shop" element={<CampaignContent type="product" />} />
-                  <Route path="media" element={<CampaignMedia />} />
-                  <Route path="about" element={<AboutCampaign />} />
+                  {campaignSubRoutes}
                 </Route>
                 <Route path="posts/:id" element={<PostContent />} />
                 <Route path="products/:id" element={<ProductContent />} />
                 <Route path="collections/:id" element={<CollectionLayout />}>
                   <Route index element={<CampaignContent type="post" collection />} />
+                </Route>
+                <Route path=":vanity" element={<CampaignLayout />}>
+                  {campaignSubRoutes}
                 </Route>
               </Route>
             </Routes>

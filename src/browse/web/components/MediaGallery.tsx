@@ -10,6 +10,7 @@ import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import lgZoom from 'lightgallery/plugins/zoom';
 import lgVideo from 'lightgallery/plugins/video';
 import LightGalleryItem, { type LightGalleryItemProps } from "./LightGalleryItem";
+import { getContentUrl } from "../utils/Misc";
 
 interface MediaGalleryProps {
   items: MediaListItem<any>[];
@@ -140,7 +141,7 @@ function MediaGallery(props: MediaGalleryProps) {
         }) : undefined;
         const dataPoster = isVideo || isAudio ? thumbnailURL : undefined;
         const title = mi.source.type === 'post' ? mi.source.title : mi.source.name;
-        const dataSubHTML =  title ? `<h4><a class="media-gallery__source-link" href="/posts/${mi.source.id}">${title}</a></h4>` : undefined;
+        const dataSubHTML =  title ? `<h4><a class="media-gallery__source-link" href="${getContentUrl(mi.source)}">${title}</a></h4>` : undefined;
         if (dataImage || dataAV || isPDF) {
           mpInRow.push({
             id: mi.id,

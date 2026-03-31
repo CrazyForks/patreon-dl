@@ -56,22 +56,49 @@ class API {
 
   async getCampaign(params: {
     id: string;
-    withCounts: true;
+    vanity?: never;
+    withCounts?: true;
+  } | {
+    id?: never;
+    vanity: string;
+    withCounts?: true;
   }): Promise<CampaignWithCounts>
   async getCampaign(params: {
     id: string;
+    vanity?: never;
+    withCounts?: false;
+  } | {
+    id?: never;
+    vanity: string;
     withCounts?: false;
   }): Promise<Campaign>
   async getCampaign(params: {
     id: string;
+    vanity?: never;
+    withCounts?: boolean;
+  } | {
+    id?: never;
+    vanity: string;
     withCounts?: boolean;
   }): Promise<Campaign | CampaignWithCounts>
   async getCampaign(params: {
     id: string;
+    vanity?: never;
+    withCounts?: boolean;
+  } | {
+    id?: never;
+    vanity: string;
     withCounts?: boolean;
   }) {
     const { withCounts = false } = params;
-    const urlObj = new URL(`/api/campaigns/${params.id}`, window.location.href);
+    let urlObj;
+    if (params.id !== undefined) {
+      urlObj = new URL(`/api/campaigns/${params.id}`, window.location.href);
+    }
+    else {
+      urlObj = new URL(`/api/campaigns/${encodeURIComponent(params.vanity)}`, window.location.href);
+      urlObj.searchParams.append('by_vanity', 'true');
+    }
     urlObj.searchParams.append('with_counts', withCounts ? 'true' : 'false' );
     const result = await fetch(urlObj.toString());
     return await result.json();

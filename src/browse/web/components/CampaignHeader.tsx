@@ -7,7 +7,7 @@ import { Stack } from "react-bootstrap";
 import MediaImage from "./MediaImage";
 
 interface CampaignHeaderProps {
-  campaign: CampaignWithCounts
+  campaign: CampaignWithCounts & { baseUrl: string; };
 }
 
 function CampaignHeader(props: CampaignHeaderProps) {
@@ -20,30 +20,30 @@ function CampaignHeader(props: CampaignHeaderProps) {
     if (campaign.postCount > 0) {
       links.push({
         title: 'Posts',
-        url: `/campaigns/${campaign.id}/posts`
+        url: `${campaign.baseUrl}/posts`
       });
     }
     if (campaign.collectionCount > 0) {
       links.push({
         title: 'Collections',
-        url: `/campaigns/${campaign.id}/collections`
+        url: `${campaign.baseUrl}/collections`
       });
     }
     if (campaign.productCount > 0) {
       links.push({
         title: 'Shop',
-        url: `/campaigns/${campaign.id}/shop`
+        url: `${campaign.baseUrl}/shop`
       });
     }
     if (campaign.mediaCount > 0) {
       links.push({
         title: 'Media',
-        url: `/campaigns/${campaign.id}/media`
+        url: `${campaign.baseUrl}/media`
       });
     }
     links.push({
       title: 'About',
-      url: `/campaigns/${campaign.id}/about`
+      url: `${campaign.baseUrl}/about`
     });
     return (
       <Stack

@@ -10,6 +10,7 @@ import ObjectHelper from "../../../utils/ObjectHelper";
 import path from "path";
 import MediaImage from "./MediaImage";
 import { ProductType } from "../../../entities/Product";
+import { getCampaignBaseUrl, getContentUrl } from "../utils/Misc";
 
 interface ProductCardProps {
   product: Product;
@@ -202,7 +203,7 @@ function ProductCard(props: ProductCardProps) {
             className="rounded"
             style={{ width: '2.5em', height: '2.5em', objectFit: 'cover'}} />
           <span>
-            <Link to={`/campaigns/${product.campaign.id}`}
+            <Link to={getCampaignBaseUrl(product.campaign)}
               className="text-body"
             >
               {product.campaign.name}
@@ -214,16 +215,7 @@ function ProductCard(props: ProductCardProps) {
   }, [product, showCampaign]);
 
   const titleEl = useMemo(() => {
-    let url: URL;
-    if (product.productType === ProductType.Post && product.referencedEntityId) {
-      url = new URL(`/posts/${product.referencedEntityId}`, window.location.href);
-    }
-    else if (product.productType === ProductType.Collection && product.referencedEntityId) {
-      url = new URL(`/collections/${product.referencedEntityId}`, window.location.href);
-    }
-    else {
-      url = new URL(`/products/${product.id}`, window.location.href);
-    }
+    const url = new URL(getContentUrl(product), window.location.href);
     if (location.pathname === url.pathname) {
       return product.name;
     }

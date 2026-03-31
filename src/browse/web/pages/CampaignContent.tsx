@@ -4,8 +4,7 @@ import { useAPI } from "../contexts/APIProvider";
 import { Container, Row, Col, Card, Stack } from "react-bootstrap";
 import ShowingText from "../components/ShowingText";
 import { type ContentType, type ContentList } from "../../types/Content";
-import { type Campaign } from "../../../entities";
-import { NavigationType, useNavigationType, useParams, useSearchParams } from "react-router";
+import { NavigationType, useNavigationType, useOutletContext, useParams, useSearchParams } from "react-router";
 import PostCard from "../components/PostCard";
 import PageNav from "../components/PageNav";
 import deepEqual from "deep-equal";
@@ -19,6 +18,8 @@ import ProductList from "../components/ProductList";
 import SearchInputBox, { type SearchInputBoxHandle } from "../components/SearchInputBox";
 import { type Collection } from "../../../entities/Post";
 import { useDocument } from "../contexts/DocumentProvider";
+import { type CampaignLayoutOutletContext } from "../layouts/CampaignLayout";
+import { type Campaign } from "../../../entities";
 
 interface CampaignContentProps<T extends ContentType> {
   type: T;
@@ -62,17 +63,18 @@ const viewParamsReducer = (
 
 function CampaignContent<T extends ContentType>(props: CampaignContentProps<T>) {
   const { type: contentType, collection: isCollection } = props;
-  const { id: domainId } = useParams(); // Campaign ID or collection ID
   const [ contextQS, setContextQS ] = useState('');
-  const [ campaignId, setCampaignId ] = useState(isCollection ? null : domainId);
-  const collectionId = isCollection ? domainId : null;
+  const [ campaign, setCampaign ] = useState<Campaign | null>(!isCollection ?
+    useOutletContext<CampaignLayoutOutletContext>().campaign
+    : null
+  );
+  const { id: collectionId } = isCollection ? useParams() : { id: null };
 
   const { api } = useAPI();
   const { setTitle } = useDocument();
   const { settings } = useBrowseSettings();
   const { scrollTo } = useScroll();
   const [viewParams, setViewParams] = useReducer(viewParamsReducer, getInitialViewParams(settings));
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [collection, setCollection] = useState<Collection | null>(null);
   const [list, setList] = useState<ContentList<T> | null>(null);
   const [filterOptions, setFilterOptions] = useState<FilterData<PostFilterSearchParams> | null>(null);
@@ -129,9 +131,10 @@ function CampaignContent<T extends ContentType>(props: CampaignContentProps<T>) 
     const abortController = new AbortController();
     void (async () => {
       const { collection, campaignId } = await api.getCollection(collectionId);
+      const campaign = await api.getCampaign({ id: campaignId });
       if (!abortController.signal.aborted) {
         setCollection(collection);
-        setCampaignId(campaignId);
+        setCampaign(campaign);
       }
     })();
 
@@ -139,21 +142,21 @@ function CampaignContent<T extends ContentType>(props: CampaignContentProps<T>) 
   }, [api, collectionId]);
 
   useEffect(() => {
-    if (!campaignId) {
+    if (!campaign) {
       setFilterOptions(null);
       return;
     }
     setFilterOptions(null);
     const abortController = new AbortController();
     void (async () => {
-      const options = await api.getContentFilterOptions(campaignId, contentType);
+      const options = await api.getContentFilterOptions(campaign.id, contentType);
       if (!abortController.signal.aborted) {
         setFilterOptions(options);
       }
     })();
 
     return () => abortController.abort();
-  }, [api, campaignId, contentType]);
+  }, [api, campaign, contentType]);
 
   useEffect(() => {
     const parts: string[] = [];
@@ -190,22 +193,6 @@ function CampaignContent<T extends ContentType>(props: CampaignContentProps<T>) 
       isFirstLoadRef.current = true;
     }
   }, [navigationType]);
-
-  useEffect(() => {
-    if (!campaignId) {
-      setCampaign(null);
-      return;
-    }
-    const abortController = new AbortController();
-    void (async () => {
-      const campaign = await api.getCampaign({ id: campaignId });
-      if (!abortController.signal.aborted) {
-        setCampaign(campaign);
-      }
-    })();
-
-    return () => abortController.abort();
-  }, [api, campaignId]);
 
   useEffect(() => {
     const { filter, page } = viewParams;

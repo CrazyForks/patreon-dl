@@ -6,6 +6,7 @@ import CampaignHeader from "../components/CampaignHeader";
 import { type CampaignWithCounts } from "../../types/Campaign";
 import CollectionBanner from "../components/CollectionBanner";
 import { type Collection } from "../../../entities/Post";
+import { getCampaignBaseUrl } from "../utils/Misc";
 
 function CollectionLayout() {
   const { id: collectionId } = useParams();
@@ -14,7 +15,7 @@ function CollectionLayout() {
     return null;
   }
   const { api } = useAPI();
-  const [campaign, setCampaign] = useState<CampaignWithCounts | null>(null);
+  const [campaign, setCampaign] = useState<(CampaignWithCounts & { baseUrl: string; }) | null>(null);
   const [collection, setCollection] = useState<Collection | null>(null);
 
   useEffect(() => {
@@ -23,7 +24,10 @@ function CollectionLayout() {
       const { campaignId, collection } = await api.getCollection(collectionId);
       const campaign = await api.getCampaign({ id: campaignId, withCounts: true });
       if (!abortController.signal.aborted) {
-        setCampaign(campaign);
+        setCampaign({
+          ...campaign,
+          baseUrl: getCampaignBaseUrl(campaign)
+        });
         setCollection(collection);
       };
     })();

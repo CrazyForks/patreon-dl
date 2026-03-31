@@ -12,6 +12,7 @@ import { useScroll } from "../contexts/MainContentScrollProvider";
 import { useBrowseSettings } from "../contexts/BrowseSettingsProvider";
 import { type BrowseSettings } from "../../types/Settings";
 import { useDocument } from "../contexts/DocumentProvider";
+import { getContentUrl } from "../utils/Misc";
 
 interface PostNav {
   previous: PostWithComments | null;
@@ -76,12 +77,14 @@ function PostContent() {
   const [stickyNav, setStickyNav] = useState(false);
 
   useEffect(() => {
-    if (!postId) {
+    // Check if postId is in format <slug>-<id>. If so, extract the id part.
+    const resolvedPostId = postId && postId.includes('-') ? postId.split('-').pop() : postId;
+    if (!resolvedPostId) {
       return;
     }
     const abortController = new AbortController();
     void (async () => {
-      const { post, previous, next } = await api.getPost(postId, getContextQS());
+      const { post, previous, next } = await api.getPost(resolvedPostId, getContextQS());
       if (!abortController.signal.aborted) {
         setContent(post);
         setPostNav({ previous, next });
@@ -123,7 +126,7 @@ function PostContent() {
     const contextQS = getContextQS();
     const previousLink = previous ? (
       <NavLink
-        to={`/posts/${previous.id}${contextQS ? '?' + contextQS : ''}`}
+        to={`${getContentUrl(previous)}${contextQS ? '?' + contextQS : ''}`}
         className={`post-nav__previous ${ !next ? 'post-nav__previous--fill' : ''}`}
         onClick={() => {
           setPostNav({ previous: null, next: null });
@@ -136,7 +139,7 @@ function PostContent() {
     ) : null;
     const nextLink = next ? (
       <NavLink
-        to={`/posts/${next.id}${contextQS ? '?' + contextQS : ''}`}
+        to={`${getContentUrl(next)}${contextQS ? '?' + contextQS : ''}`}
         className={`post-nav__next ${ !previous ? 'post-nav__next--fill' : ''}`}
         onClick={() => {
           setPostNav({ previous: null, next: null });
