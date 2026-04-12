@@ -9,6 +9,7 @@ import type Bottleneck from 'bottleneck';
 import {fileTypeFromFile} from 'file-type';
 import fs from 'fs/promises';
 import { imageSize } from 'image-size';
+import Sleeper from '../../utils/Sleeper.js';
 
 export class DownloadTaskError extends Error {
   task: IDownloadTask;
@@ -179,6 +180,9 @@ export default abstract class DownloadTask<T extends Downloadable = Downloadable
           task.log('error', `(Task create #${task.srcEntity.id}) Error resolving dest path (${retryStr}):`, error);
           err = error;
           t++;
+          if (t < maxRetries + 1) {
+            await Sleeper.sleep(1000 * t, signal);
+          }
         }
       }
       return {
