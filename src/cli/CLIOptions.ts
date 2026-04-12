@@ -219,7 +219,7 @@ function readTargetsFile(file: string) {
     contentInfo: 'include.content.info',
     previewMedia: 'include.preview.media',
     contentMedia: 'include.content.media',
-    protectedMedia: 'nclude.protected.media',
+    protectedMedia: 'include.protected.media',
     allMediaVariants: 'include.all.media.variants',
     mediaThumbnails: 'include.media.thumbnails',
     imagesByFilename: 'include.images.by.filename',
@@ -228,7 +228,12 @@ function readTargetsFile(file: string) {
     comments: 'include.comments'
   };
 
-  const lines = fs.readFileSync(file)
+  const targetsFile = path.resolve(file);
+  if (!fs.statSync(targetsFile).isFile()) {
+    throw Error('Targets file is not a file');
+  }
+
+  const lines = fs.readFileSync(targetsFile)
     .toString('utf-8')
     // Replace Windows line breaks with Unix ones and then split
     .replace(/\r\n/g, '\n').split('\n')
