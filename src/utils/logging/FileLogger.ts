@@ -97,6 +97,7 @@ export default class FileLogger<T extends FileLoggerType = FileLoggerType.Downlo
     this.config.logFilename = pathInfo.filename;
     this.config.logFilePath = pathInfo.filePath;
     this.config.created = pathInfo.created;
+    this.config.fileExistsAction = this.#fileExistsAction;
   }
 
   static getPathInfo<T extends FileLoggerType>(

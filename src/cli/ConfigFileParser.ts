@@ -41,7 +41,7 @@ const CONFIG_FILE_PROPS = {
     allMediaVariants: 'include:all.media.variants',
     mediaThumbnails: 'include:media.thumbnails',
     imagesByFilename: 'include:images.by.filename',
-    audioByFilename: 'include.audio.by.filename',
+    audioByFilename: 'include:audio.by.filename',
     attachmentsByFilename: 'include:attachments.by.filename',
     comments: 'include:comments'
   },
