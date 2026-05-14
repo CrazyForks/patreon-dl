@@ -181,7 +181,13 @@ export default abstract class DownloadTask<T extends Downloadable = Downloadable
           err = error;
           t++;
           if (t < maxRetries + 1) {
-            await Sleeper.sleep(1000 * t, signal);
+            const sleeper = Sleeper.getInstance(1000 * t, signal);
+            try {
+              await sleeper.start();
+            }
+            finally {
+              sleeper.destroy();
+            }
           }
         }
       }
