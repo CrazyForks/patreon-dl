@@ -9,7 +9,10 @@ export default class PageParser extends Parser {
     this.log('debug', `Parse initial data from ${_url}`);
 
     const initialDataRegex = /window\.patreon\s*?=\s*?({.+?});/gm;
-    const initialDataRegex2 = /<script id="__NEXT_DATA__" type="application\/json">(.+)<\/script>/gm;
+    // Allow optional attributes in <script> tag.
+    // Credit: hmv47 (https://github.com/hmv47)
+    // https://github.com/patrickkfkan/patreon-dl/issues/134
+    const initialDataRegex2 = /<script id="__NEXT_DATA__" type="application\/json"[^>]*>(.+)<\/script>/gm;
 
     this.log('debug', `Trying pattern: ${initialDataRegex}`);
     const match = initialDataRegex.exec(html);
