@@ -175,7 +175,7 @@ export default abstract class DownloadTask<T extends Downloadable = Downloadable
           if (signal?.aborted) {
             throw error;
           }
-          const willRetry = t < maxRetries ? 'will retry' : 'max reached';
+          const willRetry = t < maxRetries ? `will retry in ${1000 * t}ms` : 'max reached';
           const retryStr = t > 0 ? `retried ${t} times - ${willRetry}`: willRetry;
           task.log('error', `(Task create #${task.srcEntity.id}) Error resolving dest path (${retryStr}):`, error);
           err = error;
