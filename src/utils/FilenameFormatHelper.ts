@@ -41,6 +41,7 @@ export const CONTENT_DIR_NAME_VALIDATION_SCHEMA: FormatFieldRules<ContentDirName
 type MediaFilenameFormatFieldName =
   'media.id' |
   'media.type' |
+  'media.index' |
   'media.filename' |
   'media.variant' |
   'src.id' |
@@ -151,7 +152,9 @@ export default class FilenameFormatHelper {
         break;
     }
     try {
-      srcFields['src.date'] = dateFormat(new Date(srcFields['src.date']), 'yyyy-mm-dd_HH-MM');
+      if (srcFields['src.date']) {
+        srcFields['src.date'] = dateFormat(new Date(srcFields['src.date']), 'yyyy-mm-dd_HH-MM');
+      }
     }
     catch (_) {
       // Do nothing
@@ -159,6 +162,7 @@ export default class FilenameFormatHelper {
     const dict: FormatFieldValues<MediaFilenameFormatFieldName> = {
       'media.id': media.id,
       'media.type': media.type,
+      'media.index': media.index !== undefined ? String(media.index) : null,
       'media.filename': media.filename,
       'media.variant': media.variant,
       ...srcFields

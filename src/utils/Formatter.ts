@@ -7,7 +7,7 @@ export type FormatFieldRules<T extends FormatFieldName> = {
   atLeastOneOf: boolean;
 }[];
 
-export type FormatFieldValues<T extends FormatFieldName> = Record<T, any>;
+export type FormatFieldValues<T extends FormatFieldName> = Record<T, string | null | undefined>;
 
 export default class Formatter {
 
@@ -48,7 +48,7 @@ export default class Formatter {
       result += format.substring(0, placeholderPosition);
       const fieldValue = dict[field];
       if (fieldValue) {
-        result += fieldValue as string;
+        result += fieldValue;
         if (!consumedFields.includes(field)) {
           consumedFields.push(field);
         }
