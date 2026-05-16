@@ -1,6 +1,7 @@
 export interface MediaLike {
   type: string;
   id: string;
+  index?: number;
   filename: string | null;
   mimeType: string | null;
 }

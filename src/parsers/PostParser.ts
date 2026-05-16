@@ -135,6 +135,32 @@ export default class PostParser extends Parser {
         attachments = downloadables.attachments_media as Downloadable<AttachmentMediaItem>[] || [];
       }
 
+      // If post metadata has image_order, use that to arrange images
+      const imageOrder = ObjectHelper.getProperty(attributes, 'post_metadata.image_order');
+      if (Array.isArray(imageOrder) && images.length > 0) {
+        const orderedImages: DefaultImageMediaItem[] = [];
+        for (const imageId of imageOrder) {
+          const imgIndex = images.findIndex((i) => i.id === imageId);
+          if (imgIndex !== -1) {
+            orderedImages.push(images[imgIndex]);
+            images.splice(imgIndex, 1);
+          }
+          else {
+            this.log('warn', `Image with ID "${imageId}" listed in 'image_order' metadata of post #${id} not found among images obtained from relationships - skipping`);
+          }
+        }
+        if (images.length > 0) {
+          this.log('warn', `${images.length} images obtained from relationships of post #${id} not listed in 'image_order' metadata - appending at the end`);
+          orderedImages.push(...images);
+        }
+        images = orderedImages.map((img, index) => ({ ...img, index }));
+      }
+      else if (images.length > 0) {
+        images.forEach((img, index) => {
+          img.index = index;
+        });
+      }
+
       // Post content and teaser
       const content = this.#parseContent(attributes);
       const teaserText = this.#parseContent({
@@ -147,6 +173,9 @@ export default class PostParser extends Parser {
       const inlineMediaBody = content || teaserText;
       if (hasIncludedJSON && inlineMediaBody) {
         const inlineMedia = this.parseInlineMedia(id, inlineMediaBody, includedJSON);
+        inlineMedia.images.forEach((img, index) => {
+          img.index = images.length + index;
+        });
         images.push(...inlineMedia.images);
         linkedAttachments.push(...inlineMedia.linkedAttachments);
       }
